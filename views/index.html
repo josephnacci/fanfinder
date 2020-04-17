@@ -1,0 +1,280 @@
+<head>
+  <script src="https://d3js.org/d3.v4.js" charset="utf-8"></script>
+  <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"
+  ></script>
+  <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+  />
+
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/gh/josephnacci/datavis@latest/stackedBar.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/josephnacci/datavis@latest/barChart.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/josephnacci/datavis@latest/groupedBar.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/josephnacci/datavis@latest/dotPlot.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/josephnacci/datavis@latest/pieChart.js"></script>
+
+  <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+  <script src="https://unpkg.com/topojson-client@3"></script>
+  <script src="/public/d3labeler.js"></script>
+
+  <style>
+    .column_two {
+      float: left;
+      width: 50%;
+      text-align: center;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+      text-align: center;
+      content: "";
+      display: table;
+      clear: both;
+      padding-bottom: 20px;
+    }
+
+    html {
+      padding-bottom: 100px;
+    }
+
+    .tab {
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+    }
+
+    /* Style the buttons inside the tab */
+    .tab button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+      font-size: 17px;
+    }
+
+    /* Change background color of buttons on hover */
+    .tab button:hover {
+      background-color: #ddd;
+    }
+
+    /* Create an active/current tablink class */
+    .tab button.active {
+      background-color: #ccc;
+    }
+
+    /* Style the tab content */
+    .tabcontent {
+      display: none;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-top: none;
+    }
+
+    * {
+      outline: 0;
+      font-family: sans-serif;
+    }
+    body {
+      background-color: #fafafa;
+    }
+    span.msg,
+    span.choose {
+      color: #555;
+      padding: 5px 0 10px;
+      display: inherit;
+    }
+    .container {
+      width: 500px;
+      margin: 50px auto 0;
+      text-align: center;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font: 16px Arial;
+    }
+
+    /*the container must be positioned relative:*/
+    .autocomplete {
+      position: relative;
+      display: inline-block;
+    }
+
+    input {
+      border: 1px solid transparent;
+      background-color: #f1f1f1;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    input[type="text"] {
+      background-color: #f1f1f1;
+      width: 100%;
+    }
+
+    input[type="submit"] {
+      background-color: blue;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .autocomplete-items {
+      position: absolute;
+      border: 1px solid #d4d4d4;
+      border-bottom: none;
+      border-top: none;
+      z-index: 99;
+      /*position the autocomplete items to be the same width as the container:*/
+      top: 100%;
+      left: 0;
+      right: 0;
+    }
+
+    .autocomplete-items div {
+      padding: 10px;
+      cursor: pointer;
+      background-color: #fff;
+      border-bottom: 1px solid #d4d4d4;
+    }
+
+    /*when hovering an item:*/
+    .autocomplete-items div:hover {
+      background-color: #e9e9e9;
+    }
+
+    /*when navigating through the items using the arrow keys:*/
+    .autocomplete-active {
+      background-color: blue !important;
+      color: #ffffff;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    #box {
+      fill: orange;
+      stroke: black;
+      padding: 0;
+    }
+
+    p {
+      width: 65%;
+    }
+    
+    .hide {
+  display: inline-block;
+  margin-left: 10px;
+  width: 300px;
+  height: 20px;
+  overflow: hidden;
+  transition: all .5s ease;
+}
+    
+  </style>
+</head>
+<body>
+  <center>
+    <h1>
+      Movie FanFinder
+    </h1>
+
+    <br />
+    <div id="movie_input" class="autocomplete" style="width:300px;">
+      <input id="myInput" type="text" name="value" placeholder="Movie" /><input
+        type="submit"
+        onclick="getMovieData()"
+      />
+    </div>
+    <br />
+
+    <div class="tab">
+      <button
+        id="fanfinder_tab"
+        class="tablinks"
+        onclick="openCity(event, 'fanfinder_attitudes')"
+      >
+        FanFinder Attitudes
+      </button>
+      <button class="tablinks" onclick="openCity(event, 'map_tab')">
+        Geo Data
+      </button>
+      <button class="tablinks" onclick="openCity(event, 'demo_tab')">
+        Demo Data
+      </button>
+      <button class="tablinks" onclick="openCity(event, 'brand_tab')">
+        Brand Data
+      </button>
+      <button class="tablinks" onclick="openCity(event, 'ad_media_tab')">
+        Advertising and Media
+      </button>
+    </div>
+  </center>
+
+  <div id="fanfinder_attitudes" class="tabcontent">
+    <center>
+      <div id="similar_movies"></div>
+      <div id="concepts"></div>
+      <div id="attitude_explanation"></div>
+    
+      <div class="row">
+        <div class="column_two">
+          <div id="single_attitudes"></div>
+        </div>
+        <div class="column_two">
+          <div id="group_attitudes"></div>
+        </div>
+      </div>
+    </center>
+  </div>
+  <div id="map_tab" class="tabcontent">
+    <div id="map"></div>
+  </div>
+
+  <div id="demo_tab" class="tabcontent">
+    <div class="row">
+      <div class="column_two">
+        <div id="age"></div>
+      </div>
+      <div class="column_two">
+        <div id="gender"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column_two">
+        <div id="ed"></div>
+      </div>
+      <div class="column_two">
+        <div id="income"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="brand_tab" class="tabcontent">
+    <div id="brand_use"></div>
+  </div>
+
+  <div id="ad_media_tab" class="tabcontent">
+    <div id="ad_media"></div>
+  </div>
+
+  <script src="/public/scatter.js"></script>
+  <script src="/public/agePyramid.js"></script>
+  <script src="/public/dotPlot.js"></script>
+  <script src="/public/heatmap.js"></script>
+  <script src="/public/dma_map.js"></script>
+  <script src="/public/chloropleth.js"></script>
+
+  <script src="/public/load_charts.js"></script>
+</body>
