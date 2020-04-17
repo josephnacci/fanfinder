@@ -16,9 +16,6 @@ def hello():
   return render_template('index.html')
 
 
-
-############## motivations page ##########################################
-
 df = pd.read_csv('movie_top_features.csv')
 df = df.set_index('Unnamed: 0')
 similarity = json.load(open('similarity.json', 'r'))

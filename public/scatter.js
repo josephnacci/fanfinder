@@ -11,7 +11,10 @@ var scatterPlot = function scatterPlot(all_data, target, params) {
   var x = d3.scaleLinear().range([0, width]);
   var y = d3.scaleLinear().range([height, 0]);
 
-  let labels, links, labelArray = [], anchorArray = [];
+  let labels,
+    links,
+    labelArray = [],
+    anchorArray = [];
 
   //Redraw label and lines with transition
   function redrawLabels() {
@@ -28,11 +31,7 @@ var scatterPlot = function scatterPlot(all_data, target, params) {
       .attr("y2", d => d.y);
   }
 
-  // define the line
-  //var valueline = d3.line()
-  //.x(function(d) { return x(d.x); })
-  //.y(function(d) { return y(d.y); });
-
+  
   var data = all_data["data"];
   var title = all_data["data_params"]["title"];
   var xlabel = all_data["data_params"]["xlabel"];
@@ -49,36 +48,24 @@ var scatterPlot = function scatterPlot(all_data, target, params) {
 
   var out_colors = d3.scaleOrdinal(d3["schemeDark2"]);
 
-  // Get the data
-  //d3.json(url, function(error, data) {
 
-  console.log(data);
-  // Scale the range of the data
-  
-  var xExtent = d3.extent(data, function(d) { return d.x; }),
-  xRange = xExtent[1] - xExtent[0],
-  yExtent = d3.extent(data, function(d) { return d.y; }),
-  yRange = yExtent[1] - yExtent[0];
-  
-  if (params.pad_range == 1){
-    x.domain([xExtent[0] - (xRange * .05), xExtent[1] + (xRange * .05)]);
-    y.domain([yExtent[0] - (yRange * .05), yExtent[1] + (yRange * .05)]);
-    
-  }
-  else{
-      x.domain(
-        [xExtent[0], xExtent[1]]
-  );
-  y.domain(
-[yExtent[0], yExtent[1]]  );
+  var xExtent = d3.extent(data, function(d) {
+      return d.x;
+    }),
+    xRange = xExtent[1] - xExtent[0],
+    yExtent = d3.extent(data, function(d) {
+      return d.y;
+    }),
+    yRange = yExtent[1] - yExtent[0];
 
-    
+  if (params.pad_range == 1) {
+    x.domain([xExtent[0] - xRange * 0.05, xExtent[1] + xRange * 0.05]);
+    y.domain([yExtent[0] - yRange * 0.05, yExtent[1] + yRange * 0.05]);
+  } else {
+    x.domain([xExtent[0], xExtent[1]]);
+    y.domain([yExtent[0], yExtent[1]]);
   }
 
-  // Add the valueline path.
-  //svg.append("path")
-  //.attr("class", "line")
-  //.attr("d", valueline(data));
 
   var gdots = svg
     .selectAll("g.dot")
@@ -86,11 +73,6 @@ var scatterPlot = function scatterPlot(all_data, target, params) {
     .enter()
     .append("g");
 
-  // Add the scatterplot
-  //circles = gdots.append("circle")
-  //.attr("r", 3.5)
-  //.attr("cx", function(d) { return x(d.x); })
-  //.attr("cy", function(d) { return y(d.y); });
 
   // create a tooltip
   var tooltip = d3
@@ -108,23 +90,38 @@ var scatterPlot = function scatterPlot(all_data, target, params) {
 
   // Three function that change the tooltip when user hover / move / leave a cell
   var dotmouseover = function(d, i) {
-    d3.select(this).attr("r", 5).attr("opacity", 1)
-    svg.selectAll('text').attr("font-weight", function(d2,i2){ return (i2==i)? "bold": "normal"})
+    d3.select(this)
+      .attr("r", 5)
+      .attr("opacity", 1);
+    svg.selectAll("text").attr("font-weight", function(d2, i2) {
+      return i2 == i ? "bold" : "normal";
+    });
   };
   var dotmouseleave = function(d) {
-    svg.selectAll("circle").attr("r", 3).attr("opacity", 0.8)
-    svg.selectAll('text').attr("font-weight", "normal")
-
+    svg
+      .selectAll("circle")
+      .attr("r", 3)
+      .attr("opacity", 0.8);
+    svg.selectAll("text").attr("font-weight", "normal");
   };
-  
+
   var labelmouseover = function(d, i) {
-    d3.select(this).attr("font-weight", "bold")
-    svg.selectAll('circle').attr("r", function(d2,i2){ return (i2==i)? 5: 3}).attr("opacity", function(d2,i2){ return (i2==i)? 1: 0.8})
+    d3.select(this).attr("font-weight", "bold");
+    svg
+      .selectAll("circle")
+      .attr("r", function(d2, i2) {
+        return i2 == i ? 5 : 3;
+      })
+      .attr("opacity", function(d2, i2) {
+        return i2 == i ? 1 : 0.8;
+      });
   };
   var labelmouseleave = function(d) {
-    svg.selectAll("circle").attr("r", 3).attr("opacity", 0.8)
-    svg.selectAll('text').attr("font-weight", "normal")
-
+    svg
+      .selectAll("circle")
+      .attr("r", 3)
+      .attr("opacity", 0.8);
+    svg.selectAll("text").attr("font-weight", "normal");
   };
 
   var circles = gdots
@@ -150,9 +147,8 @@ var scatterPlot = function scatterPlot(all_data, target, params) {
       return "teal";
     })
     .attr("opacity", 1)
-  .on("mouseover", dotmouseover)
+    .on("mouseover", dotmouseover)
     .on("mouseleave", dotmouseleave);
-  
 
   labels = svg
     .selectAll(".label")
@@ -169,19 +165,17 @@ var scatterPlot = function scatterPlot(all_data, target, params) {
     })
     .attr("text-anchor", "start")
     .attr("font-size", 10)
-  .on("mouseover", labelmouseover)
-  .on("mouseleave", labelmouseleave);
-
-  
-  
+    .on("mouseover", labelmouseover)
+    .on("mouseleave", labelmouseleave);
 
   //Add height and width of label to array
   var index = 0;
   labels.each(function(d) {
-    console.log(d.name)
     //var bbox = this.node().getBBox();
-    labelArray[index].width = 6*d.name.length;//this.node().getBBox().width;
-    labelArray[index].height = 14;//this.node().getBBox().height;
+    // BBox doesn't seem to cooperate with firefox before the element is drawn
+    // so this is a guess on the length of the text for now
+    labelArray[index].width = 6 * d.name.length; //this.node().getBBox().width;
+    labelArray[index].height = 14; //this.node().getBBox().height;
     index += 1;
   });
 
@@ -208,31 +202,6 @@ var scatterPlot = function scatterPlot(all_data, target, params) {
     .start(2000);
 
   redrawLabels();
-
-  /*
-  gdots
-    .append("text")
-    //		.attr('class', 'place-label')
-    .attr("x", function(d) {
-      return x(d.x);
-    })
-    .attr("y", function(d) {
-      return y(d.y);
-    })
-    .text(function(d) {
-      return d.label;
-    })
-    .attr("fill", "black")
-    .attr("text-anchor", "middle")
-    .attr("font-size", function(d) {
-      return 12;
-    })
-    .attr("opacity", function(d) {
-      return 1;
-    });
-
-    
-  */
 
   // Add the X Axis
   if (params.show_axis == 1) {
@@ -273,7 +242,7 @@ var scatterPlot = function scatterPlot(all_data, target, params) {
     })
     .text(xlabel);
   //ylabel
-  
+
   //title
   svg
     .append("text")
@@ -290,33 +259,32 @@ var scatterPlot = function scatterPlot(all_data, target, params) {
       }
     })
     .text(ylabel);
-      title = svg
-      .append("text")
-      .attr("class", "titletext")
-      .attr("x", params.title_x)
-      .attr("y", params.title_y)
-      .attr("dy", "0.36em")
-      .style("text-anchor", "left")
-      .text(title);
+  title = svg
+    .append("text")
+    .attr("class", "titletext")
+    .attr("x", params.title_x)
+    .attr("y", params.title_y)
+    .attr("dy", "0.36em")
+    .style("text-anchor", "left")
+    .text(title);
 
-    //text styling
-    svg
-      .selectAll(".titletext")
-      .attr("font-family", "proxima-nova, sans-serif")
-      .attr("font-style", "normal")
-      .attr("font-weight", "normal")
-      .attr("font-size", params.font_size + "px")
-      .attr("line-height", "20px")
-      .attr("letter-spacing", "0.3px")
-      .attr("fill", params.font_color);
+  //text styling
+  svg
+    .selectAll(".titletext")
+    .attr("font-family", "proxima-nova, sans-serif")
+    .attr("font-style", "normal")
+    .attr("font-weight", "normal")
+    .attr("font-size", params.font_size + "px")
+    .attr("line-height", "20px")
+    .attr("letter-spacing", "0.3px")
+    .attr("fill", params.font_color);
 
-    //title text styling
-    title
-      .attr("font-size", "24px")
-      .attr("font-weight", "bold")
-      .attr("fill", params.font_color);
-  
-  
+  //title text styling
+  title
+    .attr("font-size", "24px")
+    .attr("font-weight", "bold")
+    .attr("fill", params.font_color);
+
   //});
   function wrap(text, width) {
     text.each(function() {
