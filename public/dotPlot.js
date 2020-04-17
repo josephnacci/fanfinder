@@ -15,9 +15,8 @@ var dotPlot = function dotPlot(all_data, selector, params) {
   } else {
     var height_dot = 240 - margin.top - margin.bottom;
   }
-  
-  var selector_class = selector.slice(1, selector.length);
 
+  var selector_class = selector.slice(1, selector.length);
 
   var svg = d3
     .select(selector)
@@ -26,8 +25,8 @@ var dotPlot = function dotPlot(all_data, selector, params) {
     .attr("height", height_dot + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-  
-    if (params.tooltip === 1) {
+
+  if (params.tooltip === 1) {
     var tooltipDiv = d3
       .select(selector)
       .append("div")
@@ -38,7 +37,6 @@ var dotPlot = function dotPlot(all_data, selector, params) {
       .style("border-radius", "10px")
       .style("opacity", 0);
   }
-
 
   var widthScale_dot = d3.scaleLinear().range([0, width_dot]);
 
@@ -89,7 +87,6 @@ var dotPlot = function dotPlot(all_data, selector, params) {
     .style("position", "relative");
 
   var data_keys = Object.keys(all_data["data"]);
-
 
   base_render(all_data, data_keys[data_keys.length - 1]); //[0]);
 
@@ -310,28 +307,33 @@ var dotPlot = function dotPlot(all_data, selector, params) {
       .attr("fill", color("non_group"))
       .attr("cy", function(d) {
         return heightScale_dot(d.question.trim()); // + heightScale_dot.bandwidth()/2;//rangeBand()/2;
-      })      
+      })
       .on("mouseover", function(d) {
-                    tooltipDiv.style("opacity", 0.9);
-            tooltipDiv
-              .html(
-                chart_params['group_name'] + " with " +chart_params['tt_category_words'] +" <br>" + d.question + "<br>" +
-              " gift jewelry " + (d.group_score / d.non_group_score).toFixed(2) + "x " +
-              ((d.group_score / d.non_group_score) > 1 ? "more": "less") + " <br> than similar " +
-              chart_params['other_name']
-              )
-              .style("left", d3.event.pageX + 30 + "px")
-              .style("top", d3.event.pageY - 50 + "px");
-
+        tooltipDiv.style("opacity", 0.9);
+        tooltipDiv
+          .html(
+            chart_params["group_name"] +
+              " with " +
+              chart_params["tt_category_words"] +
+              " <br>" +
+              d.question +
+              "<br>" +
+              " gift jewelry " +
+              (d.group_score / d.non_group_score).toFixed(2) +
+              "x " +
+              (d.group_score / d.non_group_score > 1 ? "more" : "less") +
+              " <br> than similar " +
+              chart_params["other_name"]
+          )
+          .style("left", d3.event.pageX + 30 + "px")
+          .style("top", d3.event.pageY - 50 + "px");
       })
       .on("mouseout", function(d1) {
-            tooltipDiv
-              .style("opacity", 0)
-              .style("top", d3.event.pageX + 100 + "px");
-          });
+        tooltipDiv
+          .style("opacity", 0)
+          .style("top", d3.event.pageX + 100 + "px");
+      });
 
-    
-    
     dots_non_customer.exit().remove();
     // Make the dots for 2015
 
@@ -354,24 +356,30 @@ var dotPlot = function dotPlot(all_data, selector, params) {
         return heightScale_dot(d.question.trim()); // + heightScale_dot.bandwidth()/2;//rangeBand()/2;
       })
       .on("mouseover", function(d) {
-                    tooltipDiv.style("opacity", 0.9);
-            tooltipDiv
-              .html(
-                chart_params['group_name'] + " with " +chart_params['tt_category_words'] +" <br>" + d.question + "<br>" +
-              " gift jewelry " + (d.group_score / d.non_group_score).toFixed(2) + "x " +
-              ((d.group_score / d.non_group_score) > 1 ? "more": "less") + " <br> than similar " +
-              chart_params['other_name']
-              )
-              .style("left", d3.event.pageX + 30 + "px")
-              .style("top", d3.event.pageY - 50 + "px");
-
+        tooltipDiv.style("opacity", 0.9);
+        tooltipDiv
+          .html(
+            chart_params["group_name"] +
+              " with " +
+              chart_params["tt_category_words"] +
+              " <br>" +
+              d.question +
+              "<br>" +
+              " gift jewelry " +
+              (d.group_score / d.non_group_score).toFixed(2) +
+              "x " +
+              (d.group_score / d.non_group_score > 1 ? "more" : "less") +
+              " <br> than similar " +
+              chart_params["other_name"]
+          )
+          .style("left", d3.event.pageX + 30 + "px")
+          .style("top", d3.event.pageY - 50 + "px");
       })
       .on("mouseout", function(d1) {
-            tooltipDiv
-              .style("opacity", 0)
-              .style("top", d3.event.pageX + 100 + "px");
-          });
-
+        tooltipDiv
+          .style("opacity", 0)
+          .style("top", d3.event.pageX + 100 + "px");
+      });
 
     dots_customer.exit().remove();
 

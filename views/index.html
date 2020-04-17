@@ -12,16 +12,16 @@
 
   <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/gh/josephnacci/datavis@latest/stackedBar.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/josephnacci/datavis@latest/barChart.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/josephnacci/datavis@latest/groupedBar.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/josephnacci/datavis@latest/dotPlot.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/josephnacci/datavis@latest/pieChart.js"></script>
-
   <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
   <script src="https://unpkg.com/topojson-client@3"></script>
   <script src="/public/d3labeler.js"></script>
+  <script src="/public/scatter.js"></script>
+  <script src="/public/dotPlot.js"></script>
+  <script src="/public/heatmap.js"></script>
+  <script src="/public/chloropleth.js"></script>
 
+  
+  
   <style>
     .column_two {
       float: left;
@@ -203,20 +203,20 @@
       <button
         id="fanfinder_tab"
         class="tablinks"
-        onclick="openCity(event, 'fanfinder_attitudes')"
+        onclick="openTab(event, 'fanfinder_attitudes')"
       >
         FanFinder Attitudes
       </button>
-      <button class="tablinks" onclick="openCity(event, 'map_tab')">
+      <button class="tablinks" onclick="openTab(event, 'map_tab')">
         Geo Data
       </button>
-      <button class="tablinks" onclick="openCity(event, 'demo_tab')">
+      <button class="tablinks" onclick="openTab(event, 'demo_tab')">
         Demo Data
       </button>
-      <button class="tablinks" onclick="openCity(event, 'brand_tab')">
+      <button class="tablinks" onclick="openTab(event, 'brand_tab')">
         Brand Data
       </button>
-      <button class="tablinks" onclick="openCity(event, 'ad_media_tab')">
+      <button class="tablinks" onclick="openTab(event, 'ad_media_tab')">
         Advertising and Media
       </button>
     </div>
@@ -269,12 +269,6 @@
     <div id="ad_media"></div>
   </div>
 
-  <script src="/public/scatter.js"></script>
-  <script src="/public/agePyramid.js"></script>
-  <script src="/public/dotPlot.js"></script>
-  <script src="/public/heatmap.js"></script>
-  <script src="/public/dma_map.js"></script>
-  <script src="/public/chloropleth.js"></script>
 
   <script src="/public/load_charts.js"></script>
 </body>

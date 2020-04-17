@@ -1,41 +1,37 @@
 var chloropleth = function chloropleth(all_data, selector, params) {
-
-  
   var margin = { top: 10, right: 10, bottom: 10, left: 10 };
 
-if ("width" in params) {
+  if ("width" in params) {
     width = params.width - margin.left - margin.right;
-} else {
+  } else {
     width = 800 - margin.left - margin.right;
-}
+  }
 
-if ("height" in params) {
+  if ("height" in params) {
     height = params.height - margin.top - margin.bottom;
-} else {
+  } else {
     height = 405 - margin.top - margin.bottom;
-}
+  }
 
-d3.selectAll(selector + " > *").remove();
+  d3.selectAll(selector + " > *").remove();
 
-
-
-// The svg
-var svg = d3.select(selector)
+  // The svg
+  var svg = d3
+    .select(selector)
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
-// Map and projection
-var projection = d3.geoAlbersUsa().scale(1200)//.translate([487.5, 305])
+  // Map and projection
+  var projection = d3
+    .geoAlbersUsa()
+    .scale(1200) //.translate([487.5, 305])
     //.center([0,20])                // GPS of location to zoom on
     //.scale(99)                       // This is like the zoom
-    .translate([ width/2, height/2 ]);
+    .translate([width / 2, height / 2]);
 
-  
-  
   //d3.queue()
   //.defer(d3.json, "gz_2010_us_040_00_500k.json")//https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")  // World shape
   //.defer(d3.csv, "all_data")//https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_gpsLocSurfer.csv") // Position of circles
@@ -47,33 +43,29 @@ var projection = d3.geoAlbersUsa().scale(1200)//.translate([487.5, 305])
   chart_params = all_data["data_params"];
   stateMap = all_data["data_params"]["state_map"];
   // Create a color scale
-  
-  
-  
 
-		//var tv = single.values;
-    for (var i = 0; i < dataGeo.features.length; i++){
-        var dma_code = dataGeo.features[i].id;
-      if (dma_code in data){
-        for (key in data[dma_code]){
-            dataGeo.features[i].properties[key] = data[dma_code][key];
-        }
+  //var tv = single.values;
+  for (var i = 0; i < dataGeo.features.length; i++) {
+    var dma_code = dataGeo.features[i].id;
+    if (dma_code in data) {
+      for (key in data[dma_code]) {
+        dataGeo.features[i].properties[key] = data[dma_code][key];
       }
-      else{
-        dataGeo.features[i].properties["value"] = 1;
-      }
-
+    } else {
+      dataGeo.features[i].properties["value"] = 1;
     }
+  }
 
-  var color = d3.scaleLinear()
+  var color = d3
+    .scaleLinear()
     .domain([0, 2])
-    .range([0,400]);
+    .range([0, 400]);
 
-
-  var threshold = d3.scaleThreshold()
+  var threshold = d3
+    .scaleThreshold()
     .domain([0.5, 0.8, 1, 1.2, 1.5, 2])
-    .range(["#de425b","#de7d64", "#e4b08f",  "#cbbe8e","#95a658", "#488f31"]);
-  
+    .range(["#de425b", "#de7d64", "#e4b08f", "#cbbe8e", "#95a658", "#488f31"]);
+
   //var color = d3.scaleSequential(d3.interpolateBlues).domain([0, 2]);
 
   // Add a scale for bubble size
@@ -86,9 +78,6 @@ var projection = d3.geoAlbersUsa().scale(1200)//.translate([487.5, 305])
     .domain(valueExtent) // What's in the data
     .range([0, 1]); // Size in pixel
 
-
-  
-  
   // Draw the map
   svg
     .append("g")
@@ -96,14 +85,16 @@ var projection = d3.geoAlbersUsa().scale(1200)//.translate([487.5, 305])
     .data(dataGeo.features)
     .enter()
     .append("path")
-    .attr("fill", function(d){return threshold(d.properties.value);})
+    .attr("fill", function(d) {
+      return threshold(d.properties.value);
+    })
     .attr("d", d3.geoPath().projection(projection))
     .style("stroke", "black")
     .style("stroke-width", 0.4)
-    .style("opacity",1);
-  
-  
-  svg.append("g")
+    .style("opacity", 1);
+
+  svg
+    .append("g")
     .selectAll("path")
     .data(topojson.feature(stateMap, stateMap.objects.states).features)
     .enter()
@@ -113,7 +104,6 @@ var projection = d3.geoAlbersUsa().scale(1200)//.translate([487.5, 305])
     .style("stroke", "black")
     .style("stroke-width", 1)
     .style("opacity", 1);
-
 
   var selector_class = selector.slice(1, selector.length);
   var tooltipDiv = d3
@@ -125,8 +115,6 @@ var projection = d3.geoAlbersUsa().scale(1200)//.translate([487.5, 305])
     .style("padding", "5px")
     .style("border-radius", "10px")
     .style("opacity", 0);
-
-
 
   // Add circles:
 
@@ -162,33 +150,43 @@ var projection = d3.geoAlbersUsa().scale(1200)//.translate([487.5, 305])
 
   var formatPercent = d3.format(".0%"),
     formatNumber = d3.format(".0f");
-  
-var xAxis = d3.axisBottom(color)
+
+  var xAxis = d3
+    .axisBottom(color)
     .tickSize(13)
-    .tickValues(threshold.domain())
+    .tickValues(threshold.domain());
 
-    //.tickFormat(function(d) { return d === 0.5 ? formatPercent(d) : formatNumber(100 * d); });
+  //.tickFormat(function(d) { return d === 0.5 ? formatPercent(d) : formatNumber(100 * d); });
 
-svg.call(xAxis);
-  
-svg.select(".domain")
-    .remove();
+  svg.call(xAxis);
 
-svg.selectAll("rect")
-  .data(threshold.range().map(function(c) {
-    var d = threshold.invertExtent(c);
-    if (d[0] == null) d[0] = color.domain()[0];
-    if (d[1] == null) d[1] = color.domain()[1];
-    return d;
-  }))
-  .enter().insert("rect", ".tick")
+  svg.select(".domain").remove();
+
+  svg
+    .selectAll("rect")
+    .data(
+      threshold.range().map(function(c) {
+        var d = threshold.invertExtent(c);
+        if (d[0] == null) d[0] = color.domain()[0];
+        if (d[1] == null) d[1] = color.domain()[1];
+        return d;
+      })
+    )
+    .enter()
+    .insert("rect", ".tick")
     .attr("height", 8)
-    .attr("x", function(d) { return color(d[0]); })
-    .attr("width", function(d) { return (color(d[1]) - color(d[0])); })
-    .attr("fill", function(d) { return threshold(d[0]); })
-;
+    .attr("x", function(d) {
+      return color(d[0]);
+    })
+    .attr("width", function(d) {
+      return color(d[1]) - color(d[0]);
+    })
+    .attr("fill", function(d) {
+      return threshold(d[0]);
+    });
 
-svg.append("text")
+  svg
+    .append("text")
     .attr("fill", "#000")
     .attr("font-weight", "bold")
     .attr("text-anchor", "start")

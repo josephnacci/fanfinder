@@ -1,5 +1,7 @@
 var base_url = "https://nacci-movie-fanfinder.glitch.me/";
 
+
+//// DROPDOWN LIST AUTOCOMPLETE
 function autocomplete(inp, arr) {
   /*the autocomplete function takes two arguments,
   the text field element and an array of possible autocompleted values:*/
@@ -103,8 +105,7 @@ function autocomplete(inp, arr) {
   });
 }
 
-/*An array containing all the country names in the world:*/
-
+// POPULATE DRODOWN LIST
 function yourFunction(callback) {
   URL = base_url + "get_film_list";
   $.get(URL, function(data) {
@@ -121,8 +122,12 @@ yourFunction(function(result) {
 });
 /*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/
 
+
+// FILL DATA
 var getMovieData = function() {
   movie = document.getElementById("myInput").value;
+  
+  //SIMILAR MOVIES
   URL = base_url + "attitudes?movie=" + movie;
   $.get(URL, function(data) {
     console.log(data);
@@ -138,8 +143,9 @@ var getMovieData = function() {
     }
     similar_movies_string += "<br>";
 
-    //similar movies concepts
-
+    
+    
+    //SIMILAR MOVIES CONCEPT CHART
     concepts = data["concepts"];
     concept_string =
       "<h4>Conceptual Links</h4><p> Movies that fans of <strong>" +
@@ -152,8 +158,6 @@ var getMovieData = function() {
         $.each(value['words'], function(k, v) {
           concept_word_text += v + ", ";
         });
-        // Will stop running after "three"
-        //return (value !== 'three');
       });
 
       concept_string +=
@@ -163,11 +167,8 @@ var getMovieData = function() {
         "<div class='hide' id='show_"+Object.keys(concepts[i])[0]+"' style='display:none;'>" + concept_word_text + "</div></span>" +
         "</li>";
     }
-    //<div class="auto">
-    //Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    //</div>
 
-    //single movie attitudes
+    //SINGLE MOVIE ATTITUDES
     single_attitudes_string =
       "<h4>" + movie + '</h4><ul style="text-align:left;">';
 
@@ -204,7 +205,8 @@ var getMovieData = function() {
     }
     single_attitudes_string += "</ul>";
 
-    //movie cluster attitudes
+    
+    //MOVIE CLUSTER ATTITUDES
     group_attitudes_string =
       "<h4>Movies similar to " + movie + '</h4><ul style="text-align:left;">';
     max_agreement = data["group_attitudes"]["top"][0]["v"];
@@ -248,6 +250,8 @@ var getMovieData = function() {
       movie +
       ".</p>";
 
+    
+    //PUSH TEXT TO DIVS
     $("#attitude_explanation").empty();
     $("#attitude_explanation").append(explanation_string);
 
@@ -263,6 +267,8 @@ var getMovieData = function() {
     $("#concepts").empty();
     $("#concepts").append(concept_string);
 
+    
+    // CONCEPT MAP FUNCTIONALITY
     if (document.getElementsByClassName("auto")) {
       var autos = document.getElementsByClassName("auto");
       for (var i = 0; i < autos.length; i++) {
@@ -284,29 +290,34 @@ var getMovieData = function() {
     }
   });
 
+  
+  //DEFINE CHART FUNCTIONS
   chart_map = {
-    pyramidChart: pyramidChart,
     scatterPlot: scatterPlot,
     dotPlot: dotPlot,
-    dmaMap: dmaMap,
     chloropleth: chloropleth
   };
 
+  
+  // DMA MAP CALL
   URL = base_url + "map?movie=" + movie;
   $.get(URL, function(data) {
     chart_map[data["chart_type"]](data["chart_data"], "#map", data["params"]);
   });
 
+  // EDUCATION CALL
   URL = base_url + "demo?movie=" + movie + "&demo_type=" + "ed";
   $.get(URL, function(data) {
     chart_map[data["chart_type"]](data["chart_data"], "#ed", data["params"]);
   });
 
+  // AGE CALL
   URL = base_url + "demo?movie=" + movie + "&demo_type=" + "age";
   $.get(URL, function(data) {
     chart_map[data["chart_type"]](data["chart_data"], "#age", data["params"]);
   });
-
+  
+  // INCOME CALL
   URL = base_url + "demo?movie=" + movie + "&demo_type=" + "income";
   $.get(URL, function(data) {
     chart_map[data["chart_type"]](
@@ -316,6 +327,7 @@ var getMovieData = function() {
     );
   });
 
+  // GENDER CALL
   URL = base_url + "demo?movie=" + movie + "&demo_type=" + "gender";
   $.get(URL, function(data) {
     chart_map[data["chart_type"]](
@@ -363,7 +375,7 @@ var getMovieData = function() {
     });
   }
 
-  //ad_media SECTION
+  //ADS AND MEDIA SECTION
 
   ad_media_list = [
     "Advertising channels that grab your attention",
@@ -498,7 +510,7 @@ var loadPersonaCharts = function(sel) {
 };
 //loadPersonaCharts('a')
 
-function openCity(evt, cityName) {
+function openTab(evt, cityName) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
@@ -512,39 +524,3 @@ function openCity(evt, cityName) {
   evt.currentTarget.className += " active";
 }
 
-var $cat = $("#category1"),
-  $subcat = $(".subcat");
-
-var optgroups = {};
-
-$subcat.each(function(i, v) {
-  var $e = $(v);
-  var _id = $e.attr("id");
-  optgroups[_id] = {};
-  $e.find("optgroup").each(function() {
-    var _r = $(this).data("rel");
-    $(this)
-      .find("option")
-      .addClass("is-dyn");
-    optgroups[_id][_r] = $(this).html();
-  });
-});
-$subcat.find("optgroup").remove();
-
-var _lastRel;
-$cat.on("change", function() {
-  var _rel = $(this).val();
-  if (_lastRel === _rel) return true;
-  _lastRel = _rel;
-  $subcat.find("option").attr("style", "");
-  $subcat.val("");
-  $subcat.find(".is-dyn").remove();
-  if (!_rel) return $subcat.prop("disabled", true);
-  $subcat.each(function() {
-    var $el = $(this);
-    var _id = $el.attr("id");
-    console.log(optgroups[_id][_rel]);
-    $el.append(optgroups[_id][_rel]);
-  });
-  $subcat.prop("disabled", false);
-});
