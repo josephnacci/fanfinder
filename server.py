@@ -25,6 +25,7 @@ brand_movies = json.load(open('brand_movies.json', 'r'))
 ad_media_movies = json.load(open('ad_media_movies.json', 'r'))
 concepts = json.load(open('concepts.json', 'r'))
 
+
 map_apostrophe = {i.replace("'", ''): i for i in list(df.index.values)}
 state_map = requests.get('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json').json()
 
@@ -93,11 +94,11 @@ def get_demo():
   response = {'chart_type': 'dotPlot'}
   gender = 'hi'
   data_params = {}
-  data_params['xlabel'] = f'Percent of {movie} fans'
+  data_params['xlabel'] = f'Percent "{movie}" fans'
   data_params['ylabel'] = f'Relative {movie} fans'
-  data_params['group_name'] = f'Fans of {movie}'
-  data_params['other_name'] = f'Fans of {movie}'
-  data_params['tt_category_words'] = 'monthly disposable income:'
+  data_params['group_name'] = f'fans of {movie}'
+  data_params['other_name'] = f'fans of {movie}'
+  data_params['tt_category_words'] = demo_type
 
   data_params['title'] = demo_title_map[demo_type]
   #print(list(demo_data[demo_type]))
@@ -114,7 +115,7 @@ def get_demo():
                         'title_y': -30,
                         'title_x': 80,
                         'point_size': 5,
-                        'color_list': ["#6c9dc6",
+                        'color_list': ["#998ec3",
                           "#de5454",
                           "#7A71E7",
                           "#F97D7D",
@@ -133,7 +134,8 @@ def get_demo():
                         'xy_orientation': 'horizontal',
                         'button_x': 700,
                         'button_y': -370,
-                        'tooltip': 1
+                        'tooltip': 1,
+                        'show_average': 1
                         } 
   return jsonify(response)
 

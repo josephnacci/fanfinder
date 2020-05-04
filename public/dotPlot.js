@@ -158,6 +158,7 @@ var dotPlot = function dotPlot(all_data, selector, params) {
     dot_highlight = all_data["data_params"]["highlight"];
     group_name = all_data["data_params"]["group_name"];
     other_name = all_data["data_params"]["other_name"];
+
     var chart_params = all_data["data_params"];
 
     if (primary_key) {
@@ -291,50 +292,91 @@ var dotPlot = function dotPlot(all_data, selector, params) {
     var mouseoverDotSize = 8;
 
     // Make the
-    var dots_non_customer = svg
-      .append("g")
-      .selectAll("g") //selectAll("circle.y1990")
-      .data(data)
-      .enter()
-      .append("circle");
+    if (chart_params.show_average == 0) {
+      var dots_non_customer = svg
+        .append("g")
+        .selectAll("g") //selectAll("circle.y1990")
+        .data(data)
+        .enter()
+        .append("circle");
 
-    dots_non_customer
-      .attr("class", "non_group")
-      .attr("cx", function(d) {
-        return margin.left + widthScale_dot(+d.non_group_score * factor);
-      })
-      .attr("r", dotSize) //heightScale_dot.bandwidth()/5)///rangeBand()/5)
-      .attr("fill", color("non_group"))
-      .attr("cy", function(d) {
-        return heightScale_dot(d.question.trim()); // + heightScale_dot.bandwidth()/2;//rangeBand()/2;
-      })
-      .on("mouseover", function(d) {
-        tooltipDiv.style("opacity", 0.9);
-        tooltipDiv
-          .html(
-            chart_params["group_name"] +
-              " with " +
-              chart_params["tt_category_words"] +
-              " <br>" +
-              d.question +
-              "<br>" +
-              " gift jewelry " +
-              (d.group_score / d.non_group_score).toFixed(2) +
-              "x " +
-              (d.group_score / d.non_group_score > 1 ? "more" : "less") +
-              " <br> than similar " +
-              chart_params["other_name"]
-          )
-          .style("left", d3.event.pageX + 30 + "px")
-          .style("top", d3.event.pageY - 50 + "px");
-      })
-      .on("mouseout", function(d1) {
-        tooltipDiv
-          .style("opacity", 0)
-          .style("top", d3.event.pageX + 100 + "px");
-      });
+      dots_non_customer
+        .attr("class", "non_group")
+        .attr("cx", function(d) {
+          return margin.left + widthScale_dot(+d.non_group_score * factor);
+        })
+        .attr("r", dotSize) //heightScale_dot.bandwidth()/5)///rangeBand()/5)
+        .attr("fill", color("non_group"))
+        .attr("cy", function(d) {
+          return heightScale_dot(d.question.trim()); // + heightScale_dot.bandwidth()/2;//rangeBand()/2;
+        })
+        .on("mouseover", function(d) {
+          console.log(d);
+          tooltipDiv.style("opacity", 0.9);
+          tooltipDiv
+            .html(
+              "People with " +
+                chart_params["tt_category_words"] +
+                d.question.trim() +
+                " <br> are " +
+                chart_params["other_name"] +
+                "<br> at a rate " +
+                (d.group_score / d.non_group_score).toFixed(2) +
+                "x " +
+                (d.group_score / d.non_group_score > 1 ? "more" : "less") +
+                " <br> than the average."
+            )
+            .style("left", d3.event.pageX + 30 + "px")
+            .style("top", d3.event.pageY - 50 + "px");
+        })
+        .on("mouseout", function(d1) {
+          tooltipDiv
+            .style("opacity", 0)
+            .style("top", d3.event.pageX + 100 + "px");
+        });
 
-    dots_non_customer.exit().remove();
+      dots_non_customer.exit().remove();
+    } else {
+      // draw a line where the average value is
+      var avgLine = svg
+        .append("g")
+        .selectAll("g") //selectAll("lines.between")
+        .data(data)
+        .enter()
+        .append("line");
+
+      avgLine
+        .attr("class", "vert")
+        .attr("x1", function(d) {
+          return margin.left + widthScale_dot(+d.non_group_score * factor);
+        })
+        .attr("y1", function(d) {
+          return heightScale_dot.range()[0]; //(d.question.trim()); // + heightScale_dot.bandwidth();//rangeBand()/2;
+        })
+        .attr("x2", function(d) {
+          return margin.left + widthScale_dot(d.non_group_score * factor);
+        })
+        .attr("y2", function(d) {
+          return heightScale_dot.range()[1]; // + heightScale_dot.bandwidth();//rangeBand()/2;
+        })
+        .attr("stroke", "orange")
+        .attr("stroke-width", function(d, i) {
+          return "2";
+        });
+      console.log(data)
+      avg_label = svg
+        .append("text")
+        .attr("x", margin.left + widthScale_dot(data[0].non_group_score * factor))
+        .attr("y", heightScale_dot.range()[0] - 10)
+        .attr("dy", "0.0em")
+        .style("text-anchor", "middle")
+        .text("Avg");
+        
+
+    
+
+      
+    }
     // Make the dots for 2015
 
     var dots_customer = svg
@@ -359,18 +401,17 @@ var dotPlot = function dotPlot(all_data, selector, params) {
         tooltipDiv.style("opacity", 0.9);
         tooltipDiv
           .html(
-            chart_params["group_name"] +
-              " with " +
+            "People with " +
               chart_params["tt_category_words"] +
-              " <br>" +
+              " " +
               d.question +
-              "<br>" +
-              " gift jewelry " +
+              " are " +
+              chart_params["other_name"] +
+              "<br> at a rate " +
               (d.group_score / d.non_group_score).toFixed(2) +
               "x " +
               (d.group_score / d.non_group_score > 1 ? "more" : "less") +
-              " <br> than similar " +
-              chart_params["other_name"]
+              " than the average."
           )
           .style("left", d3.event.pageX + 30 + "px")
           .style("top", d3.event.pageY - 50 + "px");
@@ -498,7 +539,7 @@ var dotPlot = function dotPlot(all_data, selector, params) {
       .attr("x", params.title_x)
       .attr("y", params.title_y)
       .attr("dy", "0.36em")
-      .style("text-anchor", "left")
+      .style("text-anchor", "end")
       .text(chart_params["title"]);
 
     //text styling
@@ -511,6 +552,10 @@ var dotPlot = function dotPlot(all_data, selector, params) {
       .attr("line-height", "20px")
       .attr("letter-spacing", "0.3px")
       .attr("fill", params.font_color);
+
+    avg_label.attr("fill", "orange")
+    .attr("font-weight", "bold");
+    
 
     //title text styling
     title

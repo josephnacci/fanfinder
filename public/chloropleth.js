@@ -64,7 +64,7 @@ var chloropleth = function chloropleth(all_data, selector, params) {
   var threshold = d3
     .scaleThreshold()
     .domain([0.5, 0.8, 1, 1.2, 1.5, 2])
-    .range(["#de425b", "#de7d64", "#e4b08f", "#cbbe8e", "#95a658", "#488f31"]);
+    .range(['#b35806','#f1a340','#fee0b6','#d8daeb','#998ec3','#542788']);
 
   //var color = d3.scaleSequential(d3.interpolateBlues).domain([0, 2]);
 
@@ -78,6 +78,19 @@ var chloropleth = function chloropleth(all_data, selector, params) {
     .domain(valueExtent) // What's in the data
     .range([0, 1]); // Size in pixel
 
+  var selector_class = selector.slice(1, selector.length);
+  var tooltipDiv = d3
+    .select("body")
+    .append("div")
+    .attr("id", "tooltip" + selector_class)
+    .attr("class", "tooltip tooltip" + selector_class)
+    .style("background-color", "#C4C4C4")
+    .style("padding", "5px")
+    .style("border-radius", "10px")
+    .style("opacity", 0);
+
+
+  
   // Draw the map
   svg
     .append("g")
@@ -91,7 +104,20 @@ var chloropleth = function chloropleth(all_data, selector, params) {
     .attr("d", d3.geoPath().projection(projection))
     .style("stroke", "black")
     .style("stroke-width", 0.4)
-    .style("opacity", 1);
+    .style("opacity", 1)
+     .on("mouseover", function(d){   tooltipDiv.style("opacity", 0.9);
+      tooltipDiv
+        .html(
+          d.properties.name + "<br>Fan Index: " + (d.properties.value).toFixed(2)
+        )
+
+        .style("left", d3.event.pageX + 30 + "px")
+        .style("top", d3.event.pageY - 50 + "px");
+    })
+    .on("mouseout", function(d) {
+      tooltipDiv.style("opacity", 0).style("top", d3.event.pageX + 100 + "px");
+    });
+
 
   svg
     .append("g")
@@ -104,17 +130,6 @@ var chloropleth = function chloropleth(all_data, selector, params) {
     .style("stroke", "black")
     .style("stroke-width", 1)
     .style("opacity", 1);
-
-  var selector_class = selector.slice(1, selector.length);
-  var tooltipDiv = d3
-    .select("body")
-    .append("div")
-    .attr("id", "tooltip" + selector_class)
-    .attr("class", "tooltip tooltip" + selector_class)
-    .style("background-color", "#C4C4C4")
-    .style("padding", "5px")
-    .style("border-radius", "10px")
-    .style("opacity", 0);
 
   // Add circles:
 
