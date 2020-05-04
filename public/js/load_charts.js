@@ -111,21 +111,12 @@ function autocomplete(inp, arr) {
 // POPULATE DRODOWN LIST
 function fillDropdown(callback) {
     URL = base_url + "get_film_list";
-    $.get("http://127.0.0.1:5000/", function(data) {
+    $.get(URL, function(data) {
       return data;
     }).done(function(result) {
       /* do something with the result here */
-      callback(moviesList); // invokes the callback function passed as parameter
+      callback(result); // invokes the callback function passed as parameter
     });
-
-    // Ignore until production
-    // URL = base_url + "get_film_list";
-    // $.get(URL, function(data) {
-    //   return data;
-    // }).done(function(result) {
-    //   /* do something with the result here */
-    //   callback(result); // invokes the callback function passed as parameter
-    // });
 
 }
 
