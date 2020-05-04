@@ -11,6 +11,10 @@ import requests
 
 app = Flask(__name__, static_folder='public', template_folder='views')
 
+app.config['ENV'] = 'development'
+app.config['DEBUG'] = True
+app.config['TESTING'] = True
+
 @app.route("/")
 def hello():
   return render_template('index.html')
@@ -209,7 +213,7 @@ def get_attitudes():
   return jsonify(data)
   
 if __name__ == "__main__":
-  app.run()
+  app.run(debug=True)
 
   
   

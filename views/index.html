@@ -1,274 +1,177 @@
 <head>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.16.0/css/mdb.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/public/css/styles.css" />
+
   <script src="https://d3js.org/d3.v4.js" charset="utf-8"></script>
   <script
     src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
     crossorigin="anonymous"
   ></script>
-  <link
-    rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-  />
 
-  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.16.0/js/mdb.min.js"></script>
   <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
   <script src="https://unpkg.com/topojson-client@3"></script>
-  <script src="/public/d3labeler.js"></script>
-  <script src="/public/scatter.js"></script>
-  <script src="/public/dotPlot.js"></script>
-  <script src="/public/heatmap.js"></script>
-  <script src="/public/chloropleth.js"></script>
-
-  
-  
-  <style>
-    .column_two {
-      float: left;
-      width: 50%;
-      text-align: center;
-    }
-
-    /* Clear floats after the columns */
-    .row:after {
-      text-align: center;
-      content: "";
-      display: table;
-      clear: both;
-      padding-bottom: 20px;
-    }
-
-    html {
-      padding-bottom: 100px;
-    }
-
-    .tab {
-      overflow: hidden;
-      border: 1px solid #ccc;
-      background-color: #f1f1f1;
-    }
-
-    /* Style the buttons inside the tab */
-    .tab button {
-      background-color: inherit;
-      float: left;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      padding: 14px 16px;
-      transition: 0.3s;
-      font-size: 17px;
-    }
-
-    /* Change background color of buttons on hover */
-    .tab button:hover {
-      background-color: #ddd;
-    }
-
-    /* Create an active/current tablink class */
-    .tab button.active {
-      background-color: #ccc;
-    }
-
-    /* Style the tab content */
-    .tabcontent {
-      display: none;
-      padding: 6px 12px;
-      border: 1px solid #ccc;
-      border-top: none;
-    }
-
-    * {
-      outline: 0;
-      font-family: sans-serif;
-    }
-    body {
-      background-color: #fafafa;
-    }
-    span.msg,
-    span.choose {
-      color: #555;
-      padding: 5px 0 10px;
-      display: inherit;
-    }
-    .container {
-      width: 500px;
-      margin: 50px auto 0;
-      text-align: center;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font: 16px Arial;
-    }
-
-    /*the container must be positioned relative:*/
-    .autocomplete {
-      position: relative;
-      display: inline-block;
-    }
-
-    input {
-      border: 1px solid transparent;
-      background-color: #f1f1f1;
-      padding: 10px;
-      font-size: 16px;
-    }
-
-    input[type="text"] {
-      background-color: #f1f1f1;
-      width: 100%;
-    }
-
-    input[type="submit"] {
-      background-color: blue;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    .autocomplete-items {
-      position: absolute;
-      border: 1px solid #d4d4d4;
-      border-bottom: none;
-      border-top: none;
-      z-index: 99;
-      /*position the autocomplete items to be the same width as the container:*/
-      top: 100%;
-      left: 0;
-      right: 0;
-    }
-
-    .autocomplete-items div {
-      padding: 10px;
-      cursor: pointer;
-      background-color: #fff;
-      border-bottom: 1px solid #d4d4d4;
-    }
-
-    /*when hovering an item:*/
-    .autocomplete-items div:hover {
-      background-color: #e9e9e9;
-    }
-
-    /*when navigating through the items using the arrow keys:*/
-    .autocomplete-active {
-      background-color: blue !important;
-      color: #ffffff;
-    }
-
-    ul {
-      list-style: none;
-    }
-
-    #box {
-      fill: orange;
-      stroke: black;
-      padding: 0;
-    }
-
-    p {
-      width: 65%;
-    }
-    
-    .hide {
-  display: inline-block;
-  margin-left: 10px;
-  width: 300px;
-  height: 20px;
-  overflow: hidden;
-  transition: all .5s ease;
-}
-    
-  </style>
+  <script src="/public/js/d3labeler.js"></script>
+  <script src="/public/js/scatter.js"></script>
+  <script src="/public/js/dotPlot.js"></script>
+  <script src="/public/js/colorbrewer.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+  <script src="/public/js/chloropleth.js"></script>
 </head>
 <body>
-  <center>
-    <h1>
-      Movie FanFinder
-    </h1>
-
-    <br />
-    <div id="movie_input" class="autocomplete" style="width:300px;">
-      <input id="myInput" type="text" name="value" placeholder="Movie" /><input
-        type="submit"
-        onclick="getMovieData()"
-      />
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="app-title">Movie FanFinder</div>
+    <div class="form-controls">
+      <input id="myInput" name="value" class="form-control autocomplete" type="text" placeholder="Enter a movie title to search" aria-label="Search" />
+      <input
+          class="form-button"
+          type="submit"
+          onclick="getMovieData()"
+        />
     </div>
-    <br />
-
-    <div class="tab">
-      <button
-        id="fanfinder_tab"
-        class="tablinks"
-        onclick="openTab(event, 'fanfinder_attitudes')"
-      >
-        FanFinder Attitudes
-      </button>
-      <button class="tablinks" onclick="openTab(event, 'map_tab')">
-        Geo Data
-      </button>
-      <button class="tablinks" onclick="openTab(event, 'demo_tab')">
-        Demo Data
-      </button>
-      <button class="tablinks" onclick="openTab(event, 'brand_tab')">
-        Brand Data
-      </button>
-      <button class="tablinks" onclick="openTab(event, 'ad_media_tab')">
-        Advertising and Media
-      </button>
+  </nav>
+  <div class="front-page-filler">
+    <div>
+      <i class="fas fa-film"></i>
+      <div>Search for a movie to learn more about the fans.</div>
     </div>
-  </center>
+  </div>
+  <div class="movie-content invisible">
+  <section id="second-nav">
+    <div id="movie-container">
+      <div id="movie-title" class="movie-title">The film</div>
+      <!-- <div id="movie-info" class="movie-info">2017 | RATED PG-13</div> -->
+      <div class="button-array"><div class="button nav-button clicked" id="attitudes" data-tab="tab-1"><table><tr><td class="button-text">FanFinder Attitudes</td></tr></table></div>
+      <div class="button nav-button" id="geographics" data-tab="tab-2" onclick="makeMap(movie)"><table><tr><td class="button-text">Geographic</td></tr></table></div>
+      <div class="button nav-button" id="demographics" data-tab="tab-3" onclick="getDemoData(movie)"><table><tr><td class="button-text">Demographic</td></tr></table></div>
+      <div class="button nav-button" id="brand-data" data-tab="tab-4" onclick="getBrandData(movie)"><table><tr><td class="button-text">Brand Data</td></tr></table></div>
+      <div class="button nav-button" id="advertising" data-tab="tab-5"onclick="getAdvertising(movie)"><table><tr><td class="button-text">Advertising and Media</td></tr></table></div>
+      </div>
+    </div>
+  </section>
+          <div class="background-area">
+  
+  <!-- FANFINDER ATTITUDES TAB -->
+  <div class="page-container four-element-page-container clicked" id="attitudes-page">
 
-  <div id="fanfinder_attitudes" class="tabcontent">
-    <center>
-      <div id="similar_movies"></div>
-      <div id="concepts"></div>
-      <div id="attitude_explanation"></div>
-    
-      <div class="row">
-        <div class="column_two">
-          <div id="single_attitudes"></div>
+      <div class="content-box">
+            <div class="content-box-top"><div class="content-box-hed">Similar movies</div><div class="content-box-dek">The top ten movies with the most similar fans
+            </div>
         </div>
-        <div class="column_two">
-          <div id="group_attitudes"></div>
+        <ul class="similar-movies-inner">
+          <!-- Populates through load_charts -->
+        </ul>
+
+        <div class="similar-movies-bottom">Based on the attitudes of <span>this movie</span> fans</div>
+      </div>
+            <div class="content-box">
+                  <div class="content-box-top"><div class="content-box-hed">Conceptual links</div><div class="content-box-dek">Movies with similar fans incorporate these concepts:
+                </div>
+              </div>
+                <ul class="conceptual-links-inner">
+                  <!-- Populates through load_charts -->
+                </ul>
+            <div class="similar-movies-bottom">Based on the attitudes of <span>this movie</span> fans</div>
+            </div>
+
+            <div id="defining-attitudes" class="content-box">
+                <div class="content-box-top"><div class="content-box-hed">Defining Attitudes</div><div class="content-box-dek" id="defining-attitudes-title">Fans of <span>this movie</span>
+                  </div>
+                </div>
+                <div class="list-box">
+                  <div class="list-box-left">
+                    <div class="list-box-left-text">Favorable</div><div class="list-box-left-text">Unfavorable</div>
+                  </div>
+                    <ul class="favorable-list" id="fan-favorable">
+                     <!-- Populates through load_charts -->
+                    </ul>
+                </div>
+            </div>
+             <div id="similar-films" class="content-box">
+                <div class="content-box-top"><div class="content-box-hed">Defining Attitudes</div><div class="content-box-dek" id="defining-attitudes-title">Among fans of similar films
+                  </div>
+                </div>
+                <div class="list-box">
+                  <div class="list-box-left">
+                    <div class="list-box-left-text">Favorable</div><div class="list-box-left-text">Unfavorable</div>
+                  </div>
+                    <ul class="favorable-list" id="group-favorable">
+                      <!-- Populates through load_charts -->
+                    </ul>
+                </div>
+            </div>
+                        <div id="attitude-explanatory" class="explanatory-text"><div class="explanatory-hed">How to read the “Defining Attitude” tables</div>
+
+            Defining attitudes for fans show the attitudes that are most associated with fans of <span>this movie</span>. The next table to the right assesses the same attitudes, but for fans of similar films. 
+
+            In both tables, positive scores indicate that fans agree with the corresponding statements, and higher scores indicate how strongly they agree. Similarly, negative scores indicate disagreement, and lower scores indicate how strongly fans disagree. 
+            </div>
+          </div>
+
+  <!-- GEOGRAPHIC TAB -->
+  <div class="page-container" id="geographics-page">
+    <div class="map-explanation">
+      Shades of purple indicate Nielson DMA® regions with significantly higher numbers of <span></span> fans, while shades of orange indicate significantly lower numbers. The more vibrant the shade, the more significant the data. 
+    </div>
+    <div id="map">
+    </div>
+    <div id="textbox">
+    </div>
+  </div>
+
+  <!-- DEMOGRAPHIC TAB -->
+    <div class="page-container four-chart-page-container" id="demographics-page">
+        <div id="demographics-explanatory" class="explanatory-text">
+            The orange line in the center of each chart indicates the demographic details of the average American movie consumer. Purple bars indicate how fans of <span>this movie</span> compare by demographic category; bars crossing to the right indicate a higher likelihood of meeting the corresponding demographic detail, while bars falling to the left indicate a lower likelihood. 
         </div>
-      </div>
-    </center>
-  </div>
-  <div id="map_tab" class="tabcontent">
-    <div id="map"></div>
-  </div>
+        <div id="demo-education"></div>
+        <div id="demo-age"></div>
+        <div id="demo-income"></div>
+        <div id="demo-gender"></div>
+    </div>
+<!-- BRAND DATA PAGE -->
+    <div class="page-container list-page-container" id="brand-data-page">
 
-  <div id="demo_tab" class="tabcontent">
-    <div class="row">
-      <div class="column_two">
-        <div id="age"></div>
-      </div>
-      <div class="column_two">
-        <div id="gender"></div>
+      <div>
+            <div class="brand-list-top"><div class="brand-list-hed">Fans of <span>this movie</span> are more likely to enjoy the following brands. 
+            </div>
+        </div>
+        <ul class="brand-list-inner">
+          <li id="TV-networks"><div class="brand-list-item-hed">TV networks</div><div class="brand-list-item"></div></li>
+          <li id="Spirit"><div class="brand-list-item-hed">Spirit</div><div class="brand-list-item"></div></li>
+          <li id="Specialty-store"><div class="brand-list-item-hed">Specialty store</div><div class="brand-list-item"></div></li>
+          <li id="Skincare"><div class="brand-list-item-hed">Skincare</div><div class="brand-list-item"></div></li>
+          <li id="News-websites"><div class="brand-list-item-hed">News websites</div><div class="brand-list-item"></div></li>
+          <li id="Hair-care"><div class="brand-list-item-hed">Hair care</div><div class="brand-list-item"></div></li>
+          <li id="Grocery-store"><div class="brand-list-item-hed">Grocery store</div><div class="brand-list-item"></div></li>
+          <li id="Food"><div class="brand-list-item-hed">Food</div><div class="brand-list-item"></div></li>
+          <li id="Dining"><div class="brand-list-item-hed">Dining</div><div class="brand-list-item"></div></li>
+          <li id="Department-store"><div class="brand-list-item-hed">Department store</div><div class="brand-list-item"></div></li>
+          <li id="Clothing"><div class="brand-list-item-hed">Clothing</div><div class="brand-list-item"></div></li>
+          <li id="Beverage"><div class="brand-list-item-hed">Beverage</div><div class="brand-list-item"></div></li>
+          <li id="Beer"><div class="brand-list-item-hed">Beer</div><div class="brand-list-item"></div></li>
+        </ul>
       </div>
     </div>
-    <div class="row">
-      <div class="column_two">
-        <div id="ed"></div>
-      </div>
-      <div class="column_two">
-        <div id="income"></div>
-      </div>
+<!-- ADVERTISING PAGE -->
+    <div class="page-container four-chart-page-container" id="advertising-page">
+        <div id="advertising-explanatory" class="explanatory-text">
+            Fans of <span>this movie</span> are more likely to be exposed to the following types of advertising. Hover over each dot to see answers from fans. Dots in the upper right signify media or activities with a wide reach among the public that also reach fans of this movie while dots in the lower-right signify niche media or interests with an above average reach among fans.
+        </div>
+        <div id="advertising-advertising" class="advertising-child"></div>
+        <div id="advertising-types" class="advertising-child"></div>
+        <div id="advertising-social" class="advertising-child"></div>
+        <div id="advertising-activities" class="advertising-child"></div>
     </div>
-  </div>
+            
+</div>
+</div>
 
-  <div id="brand_tab" class="tabcontent">
-    <div id="brand_use"></div>
-  </div>
-
-  <div id="ad_media_tab" class="tabcontent">
-    <div id="ad_media"></div>
-  </div>
-
-
-  <script src="/public/load_charts.js"></script>
+  <script src="/public/js/util.js"></script>
+  <script src="/public/js/load_charts.js">
+  </script>
 </body>
