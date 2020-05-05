@@ -45,7 +45,7 @@
     <div id="movie-container">
       <div id="movie-title" class="movie-title">The film</div>
       <!-- <div id="movie-info" class="movie-info">2017 | RATED PG-13</div> -->
-      <div class="button-array"><div class="button nav-button clicked" id="attitudes" data-tab="tab-1"><table><tr><td class="button-text">FanFinder Attitudes</td></tr></table></div>
+      <div class="button-array"><div class="button nav-button clicked" id="attitudes" data-tab="tab-1" onclick="getAttitudesData(movie)"><table><tr><td class="button-text">FanFinder Attitudes</td></tr></table></div>
       <div class="button nav-button" id="geographics" data-tab="tab-2" onclick="makeMap(movie)"><table><tr><td class="button-text">Geographic</td></tr></table></div>
       <div class="button nav-button" id="demographics" data-tab="tab-3" onclick="getDemoData(movie)"><table><tr><td class="button-text">Demographic</td></tr></table></div>
       <div class="button nav-button" id="brand-data" data-tab="tab-4" onclick="getBrandData(movie)"><table><tr><td class="button-text">Brand Data</td></tr></table></div>
@@ -167,7 +167,16 @@
         <div id="advertising-social" class="advertising-child"></div>
         <div id="advertising-activities" class="advertising-child"></div>
     </div>
-            
+<!-- ERROR PAGE -->
+    <div class="page-container four-chart-page-container" id="error-page">
+        <div id="error-explanatory" class="explanatory-text">
+            <span id="error-type">Data</span> is missing for fans of <span id="this-movie">this movie</span>. Try another category or search again for a different movie.
+        </div>
+        <div id="advertising-advertising" class="advertising-child"></div>
+        <div id="advertising-types" class="advertising-child"></div>
+        <div id="advertising-social" class="advertising-child"></div>
+        <div id="advertising-activities" class="advertising-child"></div>
+    </div>            
 </div>
 </div>
 
