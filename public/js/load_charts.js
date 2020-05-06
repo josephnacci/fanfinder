@@ -109,7 +109,7 @@ function autocomplete(inp, arr) {
 // POPULATE DRODOWN LIST
 function fillDropdown(callback) {
     URL = base_url + "get_film_list";
-    $.get("", function(data) {
+    $.get(URL, function(data) {
       return data;
     }).done(function(result) {
       /* do something with the result here */
