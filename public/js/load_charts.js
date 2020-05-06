@@ -1,7 +1,5 @@
 var base_url = "https://nacci-movie-fanfinder.glitch.me/";
 
-const moviesList = ["Hannibal Rising", "L.a. Confidential", "Memento", "Perfect Stranger", "Police Story 2", "The Fan", "The General", "The Prestige", "The Sixth Sense", "V For Vendetta", "7 Days In Entebbe", "A Simple Favor", "Bad Samaritan", "Bad Times At The El Royale", "Beirut", "Chappaquiddick", "Dogman", "Greta", "Hotel Artemis", "Hunter Killer", "Peppermint", "Proud Mary", "Ready Player One", "Red Sparrow", "Replicas", "Searching", "The Commuter", "The Darkest Minds", "The Girl In The Spiders Web", "The Hummingbird Project", "The Hurricane Heist", "The Meg", "The Wedding Guest", "Tyler Perrys Acrimony", "Upgrade", "Winchester", "Wind River", "Woman At War", "Angel Has Fallen", "Badla", "Crawl", "John Wick: Chapter 3", "Junglee", "Midsommar", "Pet Sematary", "Stuber", "The Intruder", "Triple Threat", "Bad Santa", "Bridget Joness Diary", "Bridget Jones: The Edge Of Reason", "My Big Fat Greek Wedding", "Paul Blart: Mall Cop", "Pirates Of The Caribbean: At Worlds End", "Pirates Of The Caribbean: Dead Mans Chest", "Super Troopers", "The Big Lebowski", "Vacation", "Zoolander", "A Bad Moms Christmas", "A Dogs Purpose", "A Hologram For The King", "A La Mala", "Absolutely Fabulous: The Movie", "American Ultra", "Bad Moms", "Bad Santa 2", "Barbershop: The Next Cut", "Battle Of The Sexes", "Baywatch", "Beatriz At Dinner", "Boo! A Madea Halloween", "Bridget Joness Baby", "Central Intelligence", "Daddys Home", "Daddys Home 2", "Danny Collins", "Diary Of A Wimpy Kid: The Long Haul", "Dirty Grandpa", "Do It Like An Hombre", "Dope", "Entourage", "Everybody Loves Somebody", "Everybody Wants Some!!", "Fist Fight", "Focus", "Get Hard", "Ghostbusters", "Girls Trip", "Going In Style", "Hail, Caesar!", "Home Again", "Hot Pursuit", "Hot Tub Time Machine 2", "How To Be A Latin Lover", "How To Be Single", "Just Getting Started", "Keeping Up With The Joneses", "Kevin Hart: What Now?", "Ladrones"]
-
 let movie; 
 
 //// DROPDOWN LIST AUTOCOMPLETE
@@ -111,7 +109,7 @@ function autocomplete(inp, arr) {
 // POPULATE DRODOWN LIST
 function fillDropdown(callback) {
     URL = base_url + "get_film_list";
-    $.get(URL, function(data) {
+    $.get("", function(data) {
       return data;
     }).done(function(result) {
       /* do something with the result here */
@@ -138,8 +136,18 @@ var getAttitudesData = function(movie) {
   $('#attitude-explanatory span').text(movie)
 
   URL = base_url + "attitudes?movie=" + movie.toLowerCase();
-  
-  $.get(URL, function(data) {
+
+  //Clear out the categories ahead of reset
+  $('#fan-favorable').html("")  
+  $('#group-favorable').html("")  
+  $('.similar-movies-inner').html("")  
+  $('.conceptual-links-inner').html("")  
+
+  fetch(URL)
+        .then((response) => {
+          return response.json()
+          })
+        .then((data) => {
     const similar = data['similar_movies']['movies'];
     for (let similar_movie of similar) {
       const sim = '<li>'+similar_movie+'</li>'
@@ -168,23 +176,29 @@ var getAttitudesData = function(movie) {
     const att = '<li><div class="unfavorable favorable-list-item">'+attitude['a']+'</div><div class="figure">'+ Math.round(attitude['v']*100) +'</div></li>'
       $('#group-favorable').append(att)
     }
-  });
+  
   for (let concept of data['concepts']) {
-    const conc = '<li class="conceptual-links-item"><div class="concept-hed">'+Object.keys(concept)+'</div><div class="concept-icon">'+ '<i class="fas fa-film"></i>' +'</div><div class="concept-words">' + concept[Object.keys(concept)]['words'].join(', ') +'</div></li>'
+    const conc = '<li class="conceptual-links-item"><div class="concept-hed">'+Object.keys(concept)+'</div><div class="concept-icon">'+ fillConcepts(Object.keys(concept)[0]) +'</div><div class="concept-words">' + concept[Object.keys(concept)]['words'].join(', ') +'</div></li>'
     $('.conceptual-links-inner').append(conc)
   }
 
-  $('.conceptual-links-item').on('mouseover', function(e){
-      let dis = e.target;
-      $(dis).toggleClass('visible')
-    })
+    $('.conceptual-links-item').on('mouseover', function(e){
+        let dis = e.target;
+        $(dis).toggleClass('visible')
+      })
     $('.conceptual-links-item').on('mouseout', function(e){
       let dis = e.target;
 
       $(dis).toggleClass('visible')
     })
-
-}
+  }).catch((e)=>{
+        console.log(e)
+        $('.page-container').removeClass('clicked')
+        $('#error-page').addClass('clicked')
+        $('#error-page #error-type').text("Information on attitudes")
+        $('#error-page #this-movie').text(movie)
+      });
+  }
 // FILL DATA
 var getBrandData = function(movie) {
   $('.brand-list-hed span').text(movie)
@@ -209,24 +223,47 @@ var getBrandData = function(movie) {
     URL = base_url + "brands?movie=" + movie.toLowerCase() + "&brand_cat=" + brand_list[b];
     let targeter = "#" + brand_list[b].replace(" ", "-") + " > .brand-list-item"
 
-    $.get(URL, function(data) {
-      let text = [];
-      for (let i in data["b_list"]) {
-        text.push(Object.keys(data["b_list"][i])[0])
-      }
-      $(targeter).text(text.join(", "))
-    });
+    fetch(URL)
+      .then((response) => {
+        return response.json()})
+      .then((data) => {
+        let text = [];
+        for (let i in data["b_list"]) {
+          text.push(Object.keys(data["b_list"][i])[0])
+        }
+        $(targeter).text("")
+        $(targeter).text(text.join(", "))
+      }).catch((e)=>{
+        console.log(e)
+        $('.page-container').removeClass('clicked')
+        $('#error-page').addClass('clicked')
+        $('#error-page #error-type').text("Brand information")
+        $('#error-page #this-movie').text(movie)
+      });
   }
 };
 
 var makeMap = function(movie) {
   $('.map-explanation span').text(movie)
 
-  // DMA MAP CALL
+  // DMA MAP CALL REPLACED WITH FETCH
   URL = base_url + "map?movie=" + movie.toLowerCase();
-  $.get(URL, function(data) {
-    chloropleth(data["chart_data"], "#map");
-  });
+  // $.get(URL, function(data) {
+  //   chloropleth(data["chart_data"], "#map");
+  // });
+  fetch(URL)
+        .then((response) => {
+          return response.json()})
+        .then((data) => {
+          chloropleth(data["chart_data"], "#map");
+        })
+      .catch((e)=>{
+        console.log(e)
+        $('.page-container').removeClass('clicked')
+        $('#error-page').addClass('clicked')
+        $('#error-page #error-type').text("Geographic information")
+        $('#error-page #this-movie').text(movie)
+      });
 }
 
 var getDemoData = function(movie) {
@@ -234,33 +271,74 @@ var getDemoData = function(movie) {
 
   // EDUCATION CALL
   URL = base_url + "demo?movie=" + movie + "&demo_type=ed";
-  $.get(URL, function(data) {
+
+  fetch(URL)
+        .then((response) => {
+          return response.json()
+          })
+        .then((data) => {
     dotPlot(data["chart_data"], "#demo-education");
-  });
+  }).catch((e)=>{
+        console.log(e)
+        $('.page-container').removeClass('clicked')
+        $('#error-page').addClass('clicked')
+        $('#error-page #error-type').text("Demographic information")
+        $('#error-page #this-movie').text(movie)
+      });
 
   // AGE CALL
   URL = base_url + "demo?movie=" + movie + "&demo_type=age";
-  $.get(URL, function(data) {
+  fetch(URL)
+        .then((response) => {
+          return response.json()
+          })
+        .then((data) => {
     dotPlot(data["chart_data"], "#demo-age");
-  });
+  }).catch((e)=>{
+        console.log(e)
+        $('.page-container').removeClass('clicked')
+        $('#error-page').addClass('clicked')
+        $('#error-page #error-type').text("Demographic information")
+        $('#error-page #this-movie').text(movie)
+      });
   
   // INCOME CALL
   URL = base_url + "demo?movie=" + movie + "&demo_type=income";
-  $.get(URL, function(data) {
+    fetch(URL)
+        .then((response) => {
+          return response.json()
+          })
+        .then((data) => {
     dotPlot(
       data["chart_data"],
       "#demo-income"
     );
-  });
+  }).catch((e)=>{
+        console.log(e)
+        $('.page-container').removeClass('clicked')
+        $('#error-page').addClass('clicked')
+        $('#error-page #error-type').text("Demographic information")
+        $('#error-page #this-movie').text(movie)
+      });
 
   // GENDER CALL
   URL = base_url + "demo?movie=" + movie + "&demo_type=gender";
-  $.get(URL, function(data) {
+  fetch(URL)
+        .then((response) => {
+          return response.json()
+          })
+        .then((data) => {
     dotPlot(
       data["chart_data"],
       "#demo-gender"
     );
-  });
+  }).catch((e)=>{
+        console.log(e)
+        $('.page-container').removeClass('clicked')
+        $('#error-page').addClass('clicked')
+        $('#error-page #error-type').text("Demographic information")
+        $('#error-page #this-movie').text(movie)
+      });
 }
 
 var getAdvertising = function(movie) {
@@ -276,8 +354,166 @@ var getAdvertising = function(movie) {
   for (let b in ad_media_list) {
     URL = base_url + "ad_media?movie=" + movie + "&brand_cat=" + ad_media_list[b];
     let target = "#advertising-" + ad_media_list[b].split(" ")[0].toLowerCase();
-    $.get(URL, function(data) {
+    fetch(URL)
+        .then((response) => {
+          return response.json()
+          })
+        .then((data) => {
       scatterPlot(data["chart_data"], target);
-    });
+    }).catch((e)=>{
+        console.log(e)
+        $('.page-container').removeClass('clicked')
+        $('#error-page').addClass('clicked')
+        $('#error-page #error-type').text("Advertising information")
+        $('#error-page #this-movie').text(movie)
+      });
   }
+}
+
+var fillConcepts = function(concept) {
+  let icon;
+  switch(concept) {
+    case "music":
+      icon = '<i class="fas fa-music"></i>'
+      break;
+    case 'money': icon = '<i class="fas fa-dollar-sign"></i>' 
+      break;
+    case 'the ocean': icon = '<i class="fas fa-water"></i>' 
+      break;
+    case 'sides': icon = '<i class="fas fa-users"></i>' 
+      break;
+    case 'chairman': icon = '<i class="fas fa-user-tie"></i>' 
+      break;
+    case 'spies': icon = '<i class="fas fa-user-secret"></i>' 
+      break;
+    case 'friend': icon = '<i class="fas fa-user-friends"></i>' 
+      break;
+    case 'vacation': icon = '<i class="fas fa-umbrella-beach"></i>' 
+      break;
+    case 'performing': icon = '<i class="fas fa-theater-masks"></i>' 
+      break;
+    case 'monsters': icon = '<i class="fas fa-teeth-open"></i>' 
+      break;
+    case 'drugs': icon = '<i class="fas fa-syringe"></i>' 
+      break;
+    case 'light': icon = '<i class="fas fa-sun"></i>' 
+      break;
+    case 'store': icon = '<i class="fas fa-store"></i>' 
+      break;
+    case 'towns': icon = '<i class="fas fa-store-alt"></i>' 
+      break;
+    case 'medicine': icon = '<i class="fas fa-stethoscope"></i>' 
+      break;
+    case 'famed': icon = '<i class="fas fa-star"></i>' 
+      break;
+    case 'murderous': icon = '<i class="fas fa-skull"></i>' 
+      break;
+    case 'death': icon = '<i class="fas fa-skull-crossbones"></i>' 
+      break;
+    case 'play': icon = '<i class="fas fa-shapes"></i>' 
+      break;
+    case 'technology': icon = '<i class="fas fa-server"></i>' 
+      break;
+    case 'garden': icon = '<i class="fas fa-seedling"></i>' 
+      break;
+    case 'uncovers': icon = '<i class="fas fa-search"></i>' 
+      break;
+    case 'journey': icon = '<i class="fas fa-route"></i>' 
+      break;
+    case 'spacecraft': icon = '<i class="fas fa-rocket"></i>' 
+      break;
+    case 'robots': icon = '<i class="fas fa-robot"></i>' 
+      break;
+    case 'the other': icon = '<i class="fas fa-question-circle"></i>' 
+      break;
+    case 'faith': icon = '<i class="fas fa-praying-hands"></i>' 
+      break;
+    case 'character traits': icon = '<i class="fas fa-portrait"></i>' 
+      break;
+    case 'flight': icon = '<i class="fas fa-plane-departure"></i>' 
+      break;
+    case 'election': icon = '<i class="fas fa-person-booth"></i>' 
+      break;
+    case 'headlines': icon = '<i class="fas fa-newspaper"></i>' 
+      break;
+    case 'music': icon = '<i class="fas fa-music"></i>' 
+      break;
+    case 'tranquil': icon = '<i class="fas fa-mug-hot"></i>' 
+      break;
+    case 'mythological': icon = '<i class="fas fa-moon"></i>' 
+      break;
+    case 'competition': icon = '<i class="fas fa-medal"></i>' 
+      break;
+    case 'bodies': icon = '<i class="fas fa-male"></i>' 
+      break;
+    case 'nature': icon = '<i class="fas fa-leaf"></i>' 
+      break;
+    case 'home': icon = '<i class="fas fa-home"></i>' 
+      break;
+    case 'effort': icon = '<i class="fas fa-hiking"></i>' 
+      break;
+    case 'construction': icon = '<i class="fas fa-hard-hat"></i>' 
+      break;
+    case 'partners': icon = '<i class="fas fa-handshake"></i>' 
+      break;
+    case 'pulling': icon = '<i class="fas fa-hand-holding"></i>' 
+      break;
+    case 'food': icon = '<i class="fas fa-hamburger"></i>' 
+      break;
+    case 'comical': icon = '<i class="fas fa-grin-beam"></i>' 
+      break;
+    case 'education': icon = '<i class="fas fa-graduation-cap"></i>' 
+      break;
+    case 'sophistication': icon = '<i class="fas fa-glass-martini-alt"></i>' 
+      break;
+    case 'celebration': icon = '<i class="fas fa-glass-cheers"></i>' 
+      break;
+    case 'horror': icon = '<i class="fas fa-ghost"></i>' 
+      break;
+    case 'convicted': icon = '<i class="fas fa-gavel"></i>' 
+      break;
+    case 'animals': icon = '<i class="fas fa-frog"></i>' 
+      break;
+    case 'championship': icon = '<i class="fas fa-flag-checkered"></i>' 
+      break;
+    case 'flames': icon = '<i class="fas fa-fire-alt"></i>' 
+      break;
+    case 'enormous': icon = '<i class="fas fa-expand-alt"></i>' 
+      break;
+    case 'writing': icon = '<i class="fas fa-edit"></i>' 
+      break;
+    case 'betting': icon = '<i class="fas fa-dice"></i>' 
+      break;
+    case 'royalty': icon = '<i class="fas fa-crown"></i>' 
+      break;
+    case 'persuades': icon = '<i class="fas fa-comment"></i>' 
+      break;
+    case 'weather': icon = '<i class="fas fa-cloud-sun-rain"></i>' 
+      break;
+    case 'family': icon = '<i class="fas fa-child"></i>' 
+      break;
+    case 'experts': icon = '<i class="fas fa-chalkboard-teacher"></i>' 
+      break;
+    case 'cars': icon = '<i class="fas fa-car"></i>' 
+      break;
+    case 'christmas': icon = '<i class="fas fa-candy-cane"></i>' 
+      break;
+    case 'job': icon = '<i class="fas fa-briefcase"></i>' 
+      break;
+    case 'violence': icon = '<i class="fas fa-bomb"></i>' 
+      break;
+    case 'origins': icon = '<i class="fas fa-baby"></i>' 
+      break;
+    case 'history': icon = '<i class="fas fa-atlas"></i>' 
+      break;
+    case 'hatred': icon = '<i class="fas fa-angry"></i>' 
+      break;
+    case 'inevitably': icon = '<i class="far fa-flag"></i>' 
+      break;
+    case 'nation': icon = '<i class="fab fa-font-awesome-flag"></i>' 
+      break;
+    default:
+      icon = '<i class="fas fa-film"></i>'
+  }
+  return icon;
 }
