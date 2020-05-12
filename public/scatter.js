@@ -144,7 +144,7 @@ var scatterPlot = function scatterPlot(all_data, target, params) {
       return y(d.y);
     })
     .attr("fill", function(d, i) {
-      return "#998ec3";
+      return "teal";
     })
     .attr("opacity", 1)
     .on("mouseover", dotmouseover)

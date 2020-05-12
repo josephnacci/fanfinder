@@ -11,6 +11,10 @@ import requests
 
 app = Flask(__name__, static_folder='public', template_folder='views')
 
+app.config['ENV'] = 'development'
+app.config['DEBUG'] = True
+app.config['TESTING'] = True
+
 @app.route("/")
 def hello():
   return render_template('index.html')
@@ -25,15 +29,81 @@ brand_movies = json.load(open('brand_movies.json', 'r'))
 ad_media_movies = json.load(open('ad_media_movies.json', 'r'))
 concepts = json.load(open('concepts.json', 'r'))
 
-
 map_apostrophe = {i.replace("'", ''): i for i in list(df.index.values)}
 state_map = requests.get('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json').json()
 
 
+@app.route('/summary', methods=['get'])
+def get_summary():
+  if 'movie' in request.args:
+    movie = map_apostrophe[request.args['movie']]
+
+  data = {}
+  print(similarity[movie])
+  data['similar_movies'] = similarity[movie]['movies'][:2]
+  
+  attitude_cols = [i for i in list(df) if i!='cluster']
+  
+  attitudes = df.loc[movie][attitude_cols].sort_values()
+  
+  top_attitudes = [{'a': i, 'v': j} for i,j in zip(attitudes.index[::-1][:2], attitudes.values[::-1][:2]) if j > 0]
+  bot_attitudes = [{'a': i, 'v': j} for i,j in zip(attitudes.index[:2], attitudes.values[:2]) if j < 0]
+
+  data['single_attitudes'] = {'top': [i['a'] for i in top_attitudes],
+                             'bot': [i['a'] for i in bot_attitudes]}
+  #print(data)
+  
+  ## max demos
+  demo_title_map = {'ed': 'EDUCATION',
+                 'age': 'AGE',
+                 'gender': 'GENDER',
+                 'income': 'INCOME'}
+  data['demo'] = {}
+  for demo in demo_title_map:
+    #print(demo_data[demo][movie])
+    max_demo = sorted(demo_data[demo][movie], key = lambda k: k['group_score'], reverse=True)[0]['question']
+    data['demo'][demo] = max_demo
+    
+    
+    
+  ## geo
+  data['geo'] = [i['Designated Market Area (DMA)'] for i in sorted([dma_movies[movie][i] for i in list(dma_movies[movie])], 
+                       key=lambda k: k['value'], reverse=True)[:3]]
+  #print(data['geo'])
+  
+  
+  ## ad_media
+  print(ad_media_movies[movie]['Social networks - member of'])
+  data['socmed'] = [i['channel'] for i in sorted(
+    [{'channel': list(i.keys())[0], 'niche': list(i.values())[0][0], 
+      'volume': list(i.values())[0][1]} for i in ad_media_movies[movie]['Social networks - member of']]
+    , key=lambda k: k['niche'], reverse=True)][:2]
+  #print(data['socmed'])
+  
+  data['attention'] = [i['channel'].split('--')[0] for i in sorted(
+    [{'channel': list(i.keys())[0], 'niche': list(i.values())[0][0], 
+      'volume': list(i.values())[0][1]} for i in ad_media_movies[movie]['Advertising channels that grab your attention']]
+    , key=lambda k: k['niche'], reverse=True)][:2]
+  
+  #brand_movies[movie][brand_cat]
+  all_brand = {}
+  for brand in list(brand_movies[movie]):
+    all_brand.update({list(i)[0]: i[list(i)[0]] for i in brand_movies[movie][brand]})
+  print(all_brand)
+  data['brand'] = [k[0] for k in sorted(all_brand.items(), key=lambda item: item[1])[::-1]][:3]
+  #print(data['brand'])
+
+  data['concepts'] = [list(i)[0] for i in list(concepts[movie])[:2]]
+  print(data['concepts'])
+  return jsonify(data)
+  
+  
+  
+
 @app.route('/get_film_list', methods=['get'])
 def film_list():
   
-  return jsonify([i.replace("'", '') for i in list(df.index.values)])
+  return jsonify([i.replace("'", '') for i in list(df.index.values) if i in list(concepts)])
 
 
 @app.route('/concepts', methods=['get'])
@@ -62,8 +132,15 @@ def get_ad_media():
   if 'brand_cat' in request.args:
     brand_cat = request.args['brand_cat']
     
+    
   data_cut = ad_media_movies[movie][brand_cat]
-  data_params = {"title": brand_cat,
+  
+  if brand_cat == "Social networks - member of":
+    title = "Social network membership"
+  else:
+    title = brand_cat
+  
+  data_params = {"title": title,
                 "xlabel": f'Fans of {movie} agreement level over non-fans',
                 "ylabel": "Overall agreement"}
   data = {'data': [{'id': ci, 'x': d[list(d)[0]][0], 'y': d[list(d)[0]][1], 'label': list(d)[0].split('--')[0].split('(')[0].split('/')[0].strip()} for ci, d in enumerate(list(data_cut)) if not 'None ' in list(d)[0] and not 'Other' in list(d)[0] and not ' know' in list(d)[0]],
@@ -82,7 +159,7 @@ def get_ad_media():
 demo_title_map = {'ed': 'EDUCATION',
                  'age': 'AGE',
                  'gender': 'GENDER',
-                 'income': 'INCOME'}
+                 'income': 'MONTHLY DISPOSABLE INCOME'}
 
 @app.route('/demo', methods=['get'])
 def get_demo():
@@ -94,11 +171,11 @@ def get_demo():
   response = {'chart_type': 'dotPlot'}
   gender = 'hi'
   data_params = {}
-  data_params['xlabel'] = f'Percent "{movie}" fans'
+  data_params['xlabel'] = f'Percent of {movie} fans'
   data_params['ylabel'] = f'Relative {movie} fans'
-  data_params['group_name'] = f'fans of {movie}'
-  data_params['other_name'] = f'fans of {movie}'
-  data_params['tt_category_words'] = demo_type
+  data_params['group_name'] = f'Fans of {movie}'
+  data_params['other_name'] = f'Fans of {movie}'
+  data_params['tt_category_words'] = 'monthly disposable income:'
 
   data_params['title'] = demo_title_map[demo_type]
   #print(list(demo_data[demo_type]))
@@ -115,7 +192,7 @@ def get_demo():
                         'title_y': -30,
                         'title_x': 80,
                         'point_size': 5,
-                        'color_list': ["#998ec3",
+                        'color_list': ["#6c9dc6",
                           "#de5454",
                           "#7A71E7",
                           "#F97D7D",
@@ -134,8 +211,7 @@ def get_demo():
                         'xy_orientation': 'horizontal',
                         'button_x': 700,
                         'button_y': -370,
-                        'tooltip': 1,
-                        'show_average': 1
+                        'tooltip': 1
                         } 
   return jsonify(response)
 
@@ -211,7 +287,7 @@ def get_attitudes():
   return jsonify(data)
   
 if __name__ == "__main__":
-  app.run()
+  app.run(debug=True)
 
   
   
