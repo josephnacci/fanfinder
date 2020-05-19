@@ -1,8 +1,20 @@
 <head>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.16.0/css/mdb.min.css" rel="stylesheet">
+  <link
+    rel="stylesheet"
+    href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+  />
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.16.0/css/mdb.min.css"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="/public/css/styles.css" />
 
   <script src="https://d3js.org/d3.v4.js" charset="utf-8"></script>
@@ -12,7 +24,10 @@
     crossorigin="anonymous"
   ></script>
 
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.16.0/js/mdb.min.js"></script>
+  <script
+    type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.16.0/js/mdb.min.js"
+  ></script>
   <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
   <script src="https://unpkg.com/topojson-client@3"></script>
   <script src="/public/js/d3labeler.js"></script>
@@ -26,12 +41,15 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="app-title">Movie FanFinder</div>
     <div class="form-controls">
-      <input id="myInput" name="value" class="form-control autocomplete" type="text" placeholder="Enter a movie title to search" aria-label="Search" />
       <input
-          class="form-button"
-          type="submit"
-          onclick="getMovieData()"
-        />
+        id="myInput"
+        name="value"
+        class="form-control autocomplete"
+        type="text"
+        placeholder="Enter a movie title to search"
+        aria-label="Search"
+      />
+      <input class="form-button" type="submit" onclick="getMovieData()" />
     </div>
   </nav>
   <div class="front-page-filler">
@@ -41,159 +59,306 @@
     </div>
   </div>
   <div class="movie-content invisible">
-  <section id="second-nav">
-    <div id="movie-container">
-      <div id="movie-title" class="movie-title">The film</div>
-      <div id="movie-summary" class="movie-summary"></div>
+    <section id="second-nav">
+      <div id="movie-container">
+        <div id="movie-title" class="movie-title">The film</div>
+        <div id="movie-summary" class="movie-summary"></div>
 
-      
-<!--#4A946C
+        <!--#4A946C
 #91A25F
 #B07874
 #B789BE
 #9FAECB
 #B6D8C5-->
-      <!-- <div id="movie-info" class="movie-info">2017 | RATED PG-13</div> -->
-      <div class="button-array"><div class="button nav-button clicked" id="attitudes" data-tab="tab-1" onclick="getAttitudesData(movie)" style="background-color: #4A946C;"><table><tr><td class="button-text">FanFinder Attitudes</td></tr></table></div>
-      <div class="button nav-button" id="geographics" data-tab="tab-2" onclick="makeMap(movie)" style="background-color: #91A25F;"><table><tr><td class="button-text">Geographic</td></tr></table></div>
-      <div class="button nav-button" id="demographics" data-tab="tab-3" onclick="getDemoData(movie)" style="background-color: #B07874;"><table><tr><td class="button-text">Demographic</td></tr></table></div>
-      <div class="button nav-button" id="brand-data" data-tab="tab-4" onclick="getBrandData(movie)" style="background-color: #B789BE;"><table><tr><td class="button-text">Brand Data</td></tr></table></div>
-      <div class="button nav-button" id="advertising" data-tab="tab-5"onclick="getAdvertising(movie)" style="background-color: #9FAECB;"><table><tr><td class="button-text">Advertising and Media</td></tr></table></div>
-      </div>
-    </div>
-  </section>
-          <div class="background-area">
-  
-  <!-- FANFINDER ATTITUDES TAB -->
-  <div class="page-container four-element-page-container clicked" id="attitudes-page">
-
-      <div class="content-box">
-            <div class="content-box-top"><div class="content-box-hed">Similar movies</div><div class="content-box-dek">The top ten movies with the most similar fans
-            </div>
+        <!-- <div id="movie-info" class="movie-info">2017 | RATED PG-13</div> -->
+        <div class="button-array">
+          <div
+            class="button nav-button clicked"
+            id="attitudes"
+            data-tab="tab-1"
+            onclick="getAttitudesData(movie)"
+            style="background-color: #4A946C;"
+          >
+            <table>
+              <tr>
+                <td class="button-text">FanFinder Attitudes</td>
+              </tr>
+            </table>
+          </div>
+          <div
+            class="button nav-button"
+            id="geographics"
+            data-tab="tab-2"
+            onclick="makeMap(movie)"
+            style="background-color: #91A25F;"
+          >
+            <table>
+              <tr>
+                <td class="button-text">Geographic</td>
+              </tr>
+            </table>
+          </div>
+          <div
+            class="button nav-button"
+            id="demographics"
+            data-tab="tab-3"
+            onclick="getDemoData(movie)"
+            style="background-color: #B07874;"
+          >
+            <table>
+              <tr>
+                <td class="button-text">Demographic</td>
+              </tr>
+            </table>
+          </div>
+          <div
+            class="button nav-button"
+            id="brand-data"
+            data-tab="tab-4"
+            onclick="getBrandData(movie)"
+            style="background-color: #B789BE;"
+          >
+            <table>
+              <tr>
+                <td class="button-text">Brand Data</td>
+              </tr>
+            </table>
+          </div>
+          <div
+            class="button nav-button"
+            id="advertising"
+            data-tab="tab-5"
+            onclick="getAdvertising(movie)"
+            style="background-color: #9FAECB;"
+          >
+            <table>
+              <tr>
+                <td class="button-text">Advertising and Media</td>
+              </tr>
+            </table>
+          </div>
         </div>
-        <ul class="similar-movies-inner">
-          <!-- Populates through load_charts -->
-        </ul>
-
-        <div class="similar-movies-bottom">Based on the attitudes of <span>this movie</span> fans</div>
       </div>
-            <div class="content-box">
-                  <div class="content-box-top"><div class="content-box-hed">Conceptual links</div><div class="content-box-dek">Movies with similar fans incorporate these concepts:
-                </div>
-              </div>
-                <ul class="conceptual-links-inner">
-                  <!-- Populates through load_charts -->
-                </ul>
-            <div class="similar-movies-bottom">Based on the attitudes of <span>this movie</span> fans</div>
-            </div>
-
-            <div id="defining-attitudes" class="content-box">
-                <div class="content-box-top"><div class="content-box-hed">Defining Attitudes</div><div class="content-box-dek" id="defining-attitudes-title">Fans of <span>this movie</span>
-                  </div>
-                </div>
-                <div class="list-box">
-                  <div class="list-box-left">
-                    <div class="list-box-left-text">Favorable</div><div class="list-box-left-text">Unfavorable</div>
-                  </div>
-                    <ul class="favorable-list" id="fan-favorable">
-                     <!-- Populates through load_charts -->
-                    </ul>
-                </div>
-            </div>
-             <div id="similar-films" class="content-box">
-                <div class="content-box-top"><div class="content-box-hed">Defining Attitudes</div><div class="content-box-dek" id="defining-attitudes-title">Among fans of similar films
-                  </div>
-                </div>
-                <div class="list-box">
-                  <div class="list-box-left">
-                    <div class="list-box-left-text">Favorable</div><div class="list-box-left-text">Unfavorable</div>
-                  </div>
-                    <ul class="favorable-list" id="group-favorable">
-                      <!-- Populates through load_charts -->
-                    </ul>
-                </div>
-            </div>
-                        <div id="attitude-explanatory" class="explanatory-text"><div class="explanatory-hed">How to read the “Defining Attitudes” tables</div>
-
-            Defining attitudes for fans show the attitudes that are most associated with fans of <span>this movie</span>. The next table to the right assesses the same attitudes, but for fans of similar films. 
-
-            In both tables, positive scores indicate that fans agree with the corresponding statements, and higher scores indicate how strongly they agree. Similarly, negative scores indicate disagreement, and lower scores indicate how strongly fans disagree. 
+    </section>
+    <div class="background-area">
+      <!-- FANFINDER ATTITUDES TAB -->
+      <div
+        class="page-container four-element-page-container clicked"
+        id="attitudes-page"
+      >
+        <div class="content-box">
+          <div class="content-box-top">
+            <div class="content-box-hed">Similar movies</div>
+            <div class="content-box-dek">
+              The top ten movies with the most similar fans
             </div>
           </div>
+          <ul class="similar-movies-inner">
+            <!-- Populates through load_charts -->
+          </ul>
 
-  <!-- GEOGRAPHIC TAB -->
-  <div class="page-container" id="geographics-page">
-    <div class="map-explanation">
-      Shades of purple indicate Nielson DMA® regions with significantly higher numbers of <span></span> fans, while shades of orange indicate significantly lower numbers. The more vibrant the shade, the more significant the data. 
-    </div>
-    <div id="map">
-    </div>
-    <div id="textbox">
-    </div>
-  </div>
+          <div class="similar-movies-bottom">
+            Based on the attitudes of <span>this movie</span> fans
+          </div>
+        </div>
+        <div class="content-box">
+          <div class="content-box-top">
+            <div class="content-box-hed">Conceptual links</div>
+            <div class="content-box-dek">
+              Movies with similar fans incorporate these concepts:
+            </div>
+          </div>
+          <ul class="conceptual-links-inner">
+            <!-- Populates through load_charts -->
+          </ul>
+          <div class="similar-movies-bottom">
+            Based on the attitudes of <span>this movie</span> fans
+          </div>
+        </div>
 
-  <!-- DEMOGRAPHIC TAB -->
-    <div class="page-container four-chart-page-container" id="demographics-page">
+        <div id="defining-attitudes" class="content-box">
+          <div class="content-box-top">
+            <div class="content-box-hed">Defining Attitudes</div>
+            <div class="content-box-dek" id="defining-attitudes-title">
+              Fans of <span>this movie</span>
+            </div>
+          </div>
+          <div class="list-box">
+            <div class="list-box-left">
+              <div class="list-box-left-text">Favorable</div>
+              <div class="list-box-left-text">Unfavorable</div>
+            </div>
+            <ul class="favorable-list" id="fan-favorable">
+              <!-- Populates through load_charts -->
+            </ul>
+          </div>
+        </div>
+        <div id="similar-films" class="content-box">
+          <div class="content-box-top">
+            <div class="content-box-hed">Defining Attitudes</div>
+            <div class="content-box-dek" id="defining-attitudes-title">
+              Among fans of similar films
+            </div>
+          </div>
+          <div class="list-box">
+            <div class="list-box-left">
+              <div class="list-box-left-text">Favorable</div>
+              <div class="list-box-left-text">Unfavorable</div>
+            </div>
+            <ul class="favorable-list" id="group-favorable">
+              <!-- Populates through load_charts -->
+            </ul>
+          </div>
+        </div>
+        <div id="attitude-explanatory" class="explanatory-text">
+          <div class="explanatory-hed">
+            How to read the “Defining Attitudes” tables
+          </div>
+
+          Defining attitudes for fans show the attitudes that are most
+          associated with fans of <span>this movie</span>. The next table to the
+          right assesses the same attitudes, but for fans of similar films. In
+          both tables, positive scores indicate that fans agree with the
+          corresponding statements, and higher scores indicate how strongly they
+          agree. Similarly, negative scores indicate disagreement, and lower
+          scores indicate how strongly fans disagree.
+        </div>
+      </div>
+
+      <!-- GEOGRAPHIC TAB -->
+      <div class="page-container" id="geographics-page">
+        <div class="map-explanation">
+          Shades of purple indicate Nielson DMA® regions with significantly
+          higher numbers of <span></span> fans, while shades of orange indicate
+          significantly lower numbers. The more vibrant the shade, the more
+          significant the data.
+        </div>
+        <div id="map"></div>
+        <div id="textbox"></div>
+      </div>
+
+      <!-- DEMOGRAPHIC TAB -->
+      <div
+        class="page-container four-chart-page-container"
+        id="demographics-page"
+      >
         <div id="demographics-explanatory" class="explanatory-text">
-            The orange line in the center of each chart indicates the demographic details of the average American movie consumer. Purple bars indicate how fans of <span>this movie</span> compare by demographic category; bars crossing to the right indicate a higher likelihood of meeting the corresponding demographic detail, while bars falling to the left indicate a lower likelihood. 
+          The orange line in the center of each chart indicates the demographic
+          details of the average American movie consumer. Purple bars indicate
+          how fans of <span>this movie</span> compare by demographic category;
+          bars crossing to the right indicate a higher likelihood of meeting the
+          corresponding demographic detail, while bars falling to the left
+          indicate a lower likelihood.
         </div>
         <div id="demo-education"></div>
         <div id="demo-age"></div>
         <div id="demo-income"></div>
         <div id="demo-gender"></div>
-    </div>
-<!-- BRAND DATA PAGE -->
-    <div class="page-container list-page-container" id="brand-data-page">
-
-      <div>
-            <div class="brand-list-top"><div class="brand-list-hed">Fans of <span>this movie</span> are more likely to enjoy the following brands. 
+      </div>
+      <!-- BRAND DATA PAGE -->
+      <div class="page-container list-page-container" id="brand-data-page">
+        <div>
+          <div class="brand-list-top">
+            <div class="brand-list-hed">
+              Fans of <span>this movie</span> are more likely to enjoy the
+              following brands.
             </div>
+          </div>
+          <ul class="brand-list-inner">
+            <li id="TV-networks">
+              <div class="brand-list-item-hed">TV networks</div>
+              <div class="brand-list-item"></div>
+            </li>
+            <li id="Spirit">
+              <div class="brand-list-item-hed">Spirit</div>
+              <div class="brand-list-item"></div>
+            </li>
+            <li id="Specialty-store">
+              <div class="brand-list-item-hed">Specialty store</div>
+              <div class="brand-list-item"></div>
+            </li>
+            <li id="Skincare">
+              <div class="brand-list-item-hed">Skincare</div>
+              <div class="brand-list-item"></div>
+            </li>
+            <li id="News-websites">
+              <div class="brand-list-item-hed">News websites</div>
+              <div class="brand-list-item"></div>
+            </li>
+            <li id="Hair-care">
+              <div class="brand-list-item-hed">Hair care</div>
+              <div class="brand-list-item"></div>
+            </li>
+            <li id="Grocery-store">
+              <div class="brand-list-item-hed">Grocery store</div>
+              <div class="brand-list-item"></div>
+            </li>
+            <li id="Food">
+              <div class="brand-list-item-hed">Food</div>
+              <div class="brand-list-item"></div>
+            </li>
+            <li id="Dining">
+              <div class="brand-list-item-hed">Dining</div>
+              <div class="brand-list-item"></div>
+            </li>
+            <li id="Department-store">
+              <div class="brand-list-item-hed">Department store</div>
+              <div class="brand-list-item"></div>
+            </li>
+            <li id="Clothing">
+              <div class="brand-list-item-hed">Clothing</div>
+              <div class="brand-list-item"></div>
+            </li>
+            <li id="Beverage">
+              <div class="brand-list-item-hed">Beverage</div>
+              <div class="brand-list-item"></div>
+            </li>
+            <li id="Beer">
+              <div class="brand-list-item-hed">Beer</div>
+              <div class="brand-list-item"></div>
+            </li>
+          </ul>
         </div>
-        <ul class="brand-list-inner">
-          <li id="TV-networks"><div class="brand-list-item-hed">TV networks</div><div class="brand-list-item"></div></li>
-          <li id="Spirit"><div class="brand-list-item-hed">Spirit</div><div class="brand-list-item"></div></li>
-          <li id="Specialty-store"><div class="brand-list-item-hed">Specialty store</div><div class="brand-list-item"></div></li>
-          <li id="Skincare"><div class="brand-list-item-hed">Skincare</div><div class="brand-list-item"></div></li>
-          <li id="News-websites"><div class="brand-list-item-hed">News websites</div><div class="brand-list-item"></div></li>
-          <li id="Hair-care"><div class="brand-list-item-hed">Hair care</div><div class="brand-list-item"></div></li>
-          <li id="Grocery-store"><div class="brand-list-item-hed">Grocery store</div><div class="brand-list-item"></div></li>
-          <li id="Food"><div class="brand-list-item-hed">Food</div><div class="brand-list-item"></div></li>
-          <li id="Dining"><div class="brand-list-item-hed">Dining</div><div class="brand-list-item"></div></li>
-          <li id="Department-store"><div class="brand-list-item-hed">Department store</div><div class="brand-list-item"></div></li>
-          <li id="Clothing"><div class="brand-list-item-hed">Clothing</div><div class="brand-list-item"></div></li>
-          <li id="Beverage"><div class="brand-list-item-hed">Beverage</div><div class="brand-list-item"></div></li>
-          <li id="Beer"><div class="brand-list-item-hed">Beer</div><div class="brand-list-item"></div></li>
-        </ul>
+      </div>
+      <!-- ADVERTISING PAGE -->
+      <div
+        class="page-container four-chart-page-container"
+        id="advertising-page"
+      >
+        <div id="advertising-explanatory" class="explanatory-text">
+          Fans of <span>this movie</span> are more likely to be exposed to the
+          following types of advertising. Hover over each dot to see the
+          specific details. Dots in the upper right signify media or activities
+          with a wide reach among the public that also reach fans of this movie,
+          while dots in the lower-right signify niche media or interests with an
+          above average reach among fans.
+        </div>
+        <div id="advertising-advertising" class="advertising-child"></div>
+        <div id="advertising-types" class="advertising-child"></div>
+        <div id="advertising-social" class="advertising-child"></div>
+        <div id="advertising-activities" class="advertising-child"></div>
+      </div>
+      <!-- ERROR PAGE -->
+      <div class="page-container four-chart-page-container" id="error-page">
+        <div id="error-explanatory" class="explanatory-text">
+          <span id="error-type">Data</span> is missing for fans of
+          <span id="this-movie">this movie</span>. Try another category or
+          search again for a different movie.
+        </div>
+        <div id="advertising-advertising" class="advertising-child"></div>
+        <div id="advertising-types" class="advertising-child"></div>
+        <div id="advertising-social" class="advertising-child"></div>
+        <div id="advertising-activities" class="advertising-child"></div>
       </div>
     </div>
-<!-- ADVERTISING PAGE -->
-    <div class="page-container four-chart-page-container" id="advertising-page">
-        <div id="advertising-explanatory" class="explanatory-text">
-            Fans of <span>this movie</span> are more likely to be exposed to the following types of advertising. Hover over each dot to see the specific details. Dots in the upper right signify media or activities with a wide reach among the public that also reach fans of this movie, while dots in the lower-right signify niche media or interests with an above average reach among fans.
-        </div>
-        <div id="advertising-advertising" class="advertising-child"></div>
-        <div id="advertising-types" class="advertising-child"></div>
-        <div id="advertising-social" class="advertising-child"></div>
-        <div id="advertising-activities" class="advertising-child"></div>
+    <div
+      id="attitude-explanatory"
+      class="explanatory-text"
+      style="font-size: 12;"
+    >
+      Data sources: YouGov, Rotten Tomatoes, Wikipedia
     </div>
-<!-- ERROR PAGE -->
-    <div class="page-container four-chart-page-container" id="error-page">
-        <div id="error-explanatory" class="explanatory-text">
-            <span id="error-type">Data</span> is missing for fans of <span id="this-movie">this movie</span>. Try another category or search again for a different movie.
-        </div>
-        <div id="advertising-advertising" class="advertising-child"></div>
-        <div id="advertising-types" class="advertising-child"></div>
-        <div id="advertising-social" class="advertising-child"></div>
-        <div id="advertising-activities" class="advertising-child"></div>
-    </div>   
-
-</div>
-  <div id="attitude-explanatory" class="explanatory-text" style="font-size: 12;">
-  Data sources: YouGov, Rotten Tomatoes, Wikipedia
   </div>
-
-</div>
   <script src="/public/js/util.js"></script>
-  <script src="/public/js/load_charts.js">
-  </script>
+  <script src="/public/js/load_charts.js"></script>
 </body>
